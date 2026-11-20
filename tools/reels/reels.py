@@ -312,7 +312,7 @@ def sac():
     e = []
     e.append(A(0.0, 3.2, 300, '<span class="tag">Box</span>'))
     e.append(A(0.15, 3.2, 420, '<p class="hero" style="font-size:240px;line-height:240px">7</p>'))
-    e.append(A(0.5, 3.2, 680, '<h1 class="tc">Dans ton<br>sac de box</h1>'))
+    e.append(A(0.5, 3.2, 680, '<h1 class="tc"><span class="ch">Essentiels</span><br>dans ton<br>sac de box</h1>'))
     items = ['Corde à sauter', 'Gourde', 'Serviette', 'Protège-mains', 'Bandes de poignets', 'Chaussures stables', 'De quoi noter tes scores']
     e.append(A(3.4, 12.2, 300, '<h2 class="ts">Les essentiels</h2>'))
     for k, it in enumerate(items):
@@ -331,7 +331,7 @@ def sac():
 def mythes():
     e = []
     e.append(A(0.0, 3.2, 300, '<span class="tag">Mythe ou réalité</span>'))
-    e.append(A(0.15, 3.2, 420, '<h1 class="tc">3 idées<br>reçues<br>de box</h1>'))
+    e.append(A(0.15, 3.2, 420, '<h1 class="tc"><span class="ch">3 idées<br>reçues</span><br>de box</h1>'))
     myths = [('« Pas de courbatures = séance ratée »', 'Les courbatures ne disent pas si ta séance était bonne. Ta progression se lit dans tes scores.'),
              ('« Scaled = moins efficace »', 'Un WOD bien scalé garde le stimulus prévu. Souvent plus utile qu\'un RX subi.'),
              ('« Plus lourd = mieux »', 'Une charge que tu bouges proprement et vite sert mieux le WOD qu\'une charge qui te bloque.')]
