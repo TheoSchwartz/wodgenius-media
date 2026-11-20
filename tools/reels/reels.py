@@ -13,6 +13,7 @@ from render_slides import font_faces
 from playwright.sync_api import sync_playwright
 
 W, H, FPS = 1080, 1920, 30
+BEEPS = False
 FONTS = HERE.parent / 'fonts'
 
 CSS = """
@@ -168,7 +169,8 @@ def audio(path, dur, sounds):
         n = int(sr * d); tt = np.arange(n) / sr
         env = np.minimum(1, tt / 0.004) * np.exp(-tt / (d / 3))
         s = int(sr * t0); x[s:s + n] += vol * env * np.sin(2 * np.pi * f * tt)
-    for t, kind in sounds:
+    # Bips désactivés le 20 nov. 2026 (jugés pénibles par Théo) : piste muette, musique ajoutée dans Instagram.
+    for t, kind in (sounds if BEEPS else []):
         if kind == 'click': tone(t, 1800, 0.05, 0.18)
         elif kind == 'tick': tone(t, 1400, 0.04, 0.12)
         elif kind == 'go':
