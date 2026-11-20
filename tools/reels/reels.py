@@ -13,7 +13,7 @@ from render_slides import font_faces
 from playwright.sync_api import sync_playwright
 
 W, H, FPS = 1080, 1920, 30
-BEEPS = False
+BEEPS = False  # bips jugés pénibles : la musique vient de loop.py
 FONTS = HERE.parent / 'fonts'
 
 CSS = """
@@ -30,7 +30,7 @@ html,body{margin:0;background:#0e1013}
 .b{font-size:50px;line-height:66px;margin:0}
 .row{display:flex;justify-content:space-between;align-items:baseline;padding:30px 0;border-top:2px solid #2a2e35;font-size:48px;line-height:58px}
 .rk{font-family:'JetBrains Mono',monospace;font-size:32px;color:#9ba1a8}
-.brand{position:absolute;left:96px;top:1500px;display:inline-flex;align-items:center;gap:20px;font-family:'JetBrains Mono',monospace;font-size:34px;line-height:40px;font-weight:600;color:#9ba1a8}
+.brand{position:absolute;left:96px;top:262px;display:inline-flex;align-items:center;gap:20px;font-family:'JetBrains Mono',monospace;font-size:34px;line-height:40px;font-weight:600;color:#9ba1a8}
 .brand svg{width:48px;height:78px;display:block;transform:translateY(-15px)}
 .brand .acc{fill:#f3c34f}.brand .accs{stroke:#f3c34f}
 .hl{color:#5e646c;transition:none}
@@ -65,7 +65,10 @@ function frame(t){
 }
 """
 
+OFFSET = 150   # contenu centré dans la zone utile (sous la barre du haut, au-dessus du pseudo et de la légende)
+
 def A(t_in, t_out, top, inner, extra=''):
+    top += OFFSET
     o = f' data-out="{t_out}"' if t_out else ''
     return f'<div class="a" data-in="{t_in}"{o} style="top:{top}px;{extra}">{inner}</div>'
 
@@ -107,7 +110,7 @@ def rpe():
     for k, (n, lab, w, acc) in enumerate(scale):
         t = 3.5 + k * 0.45
         col = '#f3c34f' if acc else '#5e646c'
-        e.append(A(t, 7.0, 500 + k * 230,
+        e.append(A(t, 7.0, 480 + k * 205,
                    f'<div style="display:flex;align-items:baseline;gap:28px"><span class="mono" style="font-size:72px;font-weight:700;width:110px;color:{"#f3c34f" if acc else "#f2efe8"}">{n}</span>'
                    f'<span class="b">{lab}</span></div>'
                    f'<div class="bar grow" data-t0="{t}" style="width:{w}%;margin-top:18px;background:{col}"></div>'))
@@ -134,7 +137,7 @@ def figure(step):
     out += {1: [tuck], 2: [ext, tuck], 3: [ext], 4: [ext]}[step]
     out.append('<circle cx="150" cy="246" r="40" fill="#0e1013" stroke="#f2efe8" stroke-width="20"/>')
     out.append('<circle cx="380" cy="376" r="14" fill="#f3c34f"/>')
-    return f'<svg viewBox="0 0 900 420" width="888" height="414">{"".join(out)}</svg>'
+    return f'<svg viewBox="0 0 900 420" width="834" height="389">{"".join(out)}</svg>'
 
 def hollow():
     e = []
@@ -147,7 +150,7 @@ def hollow():
     for k, txt in enumerate(steps):
         t0 = 3.5 + k * 1.6
         t1 = t0 + 1.6 if k < 3 else 10.2
-        e.append(A(t0, t1, 520, figure(k + 1), 'right:96px'))
+        e.append(A(t0, t1, 540, figure(k + 1)))
         e.append(A(t0, t1, 980, f'<p class="mono ch" style="font-size:44px;font-weight:700;margin:0">ÉTAPE 0{k+1}</p><p class="b" style="margin-top:16px">{txt}</p>'))
     e.append(A(3.6, 10.2, 1250, '<p class="b muted" style="font-size:40px;line-height:54px"><span class="ch">●</span> bas du dos plaqué au sol</p>'))
     e.append(A(10.4, None, 420, '<h2 class="tc">Gaine<br>d\'abord</h2>'))
@@ -169,7 +172,6 @@ def audio(path, dur, sounds):
         n = int(sr * d); tt = np.arange(n) / sr
         env = np.minimum(1, tt / 0.004) * np.exp(-tt / (d / 3))
         s = int(sr * t0); x[s:s + n] += vol * env * np.sin(2 * np.pi * f * tt)
-    # Bips désactivés le 20 nov. 2026 (jugés pénibles par Théo) : piste muette, musique ajoutée dans Instagram.
     for t, kind in (sounds if BEEPS else []):
         if kind == 'click': tone(t, 1800, 0.05, 0.18)
         elif kind == 'tick': tone(t, 1400, 0.04, 0.12)
