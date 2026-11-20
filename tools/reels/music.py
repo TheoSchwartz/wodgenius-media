@@ -292,7 +292,42 @@ def boombap(path, dur, cue=3.4):
     m.L = lp(m.L, 9000); m.R = lp(m.R, 9000)
     m.render(path, 1.0); return 94
 
-STYLES = {'lofi': lofi, 'house': house, 'synthwave': synthwave, 'funk': funk, 'trap': trap, 'boombap': boombap}
+def cowbell(f, d=0.22):
+    t = tt(d)
+    x = np.sign(np.sin(2 * np.pi * f * t)) + np.sign(np.sin(2 * np.pi * f * 1.48 * t))
+    return bp(x, 450, 2600) * np.exp(-t / 0.07) * np.minimum(1, t / 0.001)
+
+def phonk(path, dur, cue=3.6, drop=13.8):
+    """Phonk de salle de sport, 125 BPM, fa mineur : cloche (cowbell) mélodique, 808 saturé, caisse claire en demi-temps."""
+    beat, bar, pre, m, nb = _grid(dur, 125, cue)
+    s16 = beat / 4
+    riff = [0, None, 3, None, 7, 5, None, 3, 0, None, 3, 5, None, 3, -2, None]      # fa, lab, do, sib… (fa mineur)
+    roots = [note(-40), note(-40), note(-45), note(-43)]                              # fa0… réb0, mib0 (808)
+    for b in range(nb):
+        t0 = b * bar - pre
+        full = t0 >= cue - 0.01; big = t0 >= drop - 0.05
+        for k, n in enumerate(riff):
+            if n is None: continue
+            m.add(cowbell(note(n - 4)), t0 + k * s16, 0.22 if big else 0.17, 0.15 if k % 2 else -0.15)
+        if not full:
+            continue
+        r = roots[b % 4]
+        m.add(np.tanh(2.2 * sub808(r * 2, beat * 1.6)), t0, 0.55)
+        m.add(np.tanh(2.2 * sub808(r * 2, beat * 1.2)), t0 + 2.5 * beat, 0.45)
+        for k in range(4):
+            tk = t0 + k * beat
+            if k in (0, 2) or (big and k == 3): m.add(kick(), tk, 0.8)
+            if k == 2: m.add(clap(), tk, 0.45); m.add(snare(), tk, 0.25)
+        for k in range(8 if not big else 16):
+            step = beat / 2 if not big else s16
+            m.add(hat(0.008, 0.03, 9000), t0 + k * step, 0.06 if k % 2 else 0.09, 0.3)
+    # montée et impact au « Top départ »
+    t = tt(bar); riser = hp(rng.standard_normal(len(t)), 800) * (t / bar) ** 2
+    m.add(lp(riser, 9000), drop - bar, 0.12)
+    t = tt(1.0); m.add(lp(rng.standard_normal(len(t)), 3000) * np.exp(-t / 0.3), drop, 0.18)
+    m.render(path, 0.9); return 125
+
+STYLES = {'lofi': lofi, 'house': house, 'synthwave': synthwave, 'funk': funk, 'trap': trap, 'boombap': boombap, 'phonk': phonk}
 if __name__ == '__main__':
     style, out = sys.argv[1], sys.argv[2]
     dur = float(sys.argv[3]) if len(sys.argv) > 3 else 13.5
