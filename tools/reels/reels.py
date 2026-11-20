@@ -346,8 +346,89 @@ def mythes():
     e.append(A(20.7, None, 880, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage</p>'))
     return ''.join(e), 23.0, []
 
+# ---------------- Lot du 2 au 8 décembre (accroche visible dès la frame 0 : data-in négatif) ----------------
+H0 = -1.0   # entrée avant 0 s : l'accroche est déjà en place sur la première image
+
+def ab_burpees():
+    e = []
+    e.append(A(H0, 3.6, 260, '<span class="tag">A ou B ?</span>'))
+    e.append(A(H0, 3.6, 390, '<h1 class="tc" style="font-size:190px;line-height:210px"><span class="ch">100<br>burpees</span></h1>'))
+    e.append(A(H0, 3.6, 840, '<p class="b" style="font-size:78px;line-height:96px;font-weight:600">Lequel est<br>le plus dur ?</p>'))
+    for k, (lt, name, rows, t0) in enumerate([
+            ('A', 'Pour le temps', ['100 burpees', 'Le plus vite possible', 'Pause quand tu veux'], 3.8),
+            ('B', 'EMOM 10 min', ['10 burpees par minute', 'Repos : le reste de la minute', '10 minutes, pas une de plus'], 8.2)]):
+        t1 = t0 + 4.2
+        e.append(A(t0, t1, 260, f'<p class="hero" style="font-size:260px;line-height:260px">{lt}</p>'))
+        e.append(A(t0 + 0.4, t1, 560, f'<h2 class="ts">{name}</h2>'))
+        for j, r in enumerate(rows):
+            e.append(A(t0 + 0.9 + j * 0.5, t1, 740 + j * 120, f'<div class="row"><span style="font-weight:600">{r}</span></div>'))
+    e.append(A(12.6, 16.6, 260, '<p class="mono muted" style="font-size:40px;font-weight:700;margin:0">MÊME TOTAL</p>'))
+    e.append(A(12.8, 16.6, 360, '<h2 class="ts">Deux pièges<br>différents</h2>'))
+    e.append(A(13.4, 16.6, 680, '<div class="card2"><p class="rk" style="margin:0">A</p><p class="b" style="margin-top:8px;font-weight:600">Tu gères ton rythme… et tes pauses.</p></div>'))
+    e.append(A(14.0, 16.6, 960, '<div class="card2"><p class="rk" style="margin:0">B</p><p class="b" style="margin-top:8px;font-weight:600">Le chrono décide. Ton repos fond.</p></div>'))
+    e.append(A(16.8, None, 360, '<h2 class="tc" style="font-size:220px;line-height:240px">A ou B ?</h2>'))
+    e.append(A(17.2, None, 660, '<p class="b">Vote en commentaire : <span style="font-weight:600">lequel est le plus dur ?</span></p>'))
+    e.append(A(17.7, None, 900, '<p class="mono ch" style="font-size:42px;line-height:58px;font-weight:700;margin:0">Envoie-le à ton binôme :<br>il fait l\'autre.</p>'))
+    return ''.join(e), 21.0, []
+
+def defi_binome():
+    e = []
+    e.append(A(H0, 3.6, 260, '<span class="tag">Défi à deux</span>'))
+    e.append(A(H0, 3.6, 400, '<h1 class="tc" style="font-size:150px;line-height:178px">Qui lâche<br>en premier ?</h1>'))
+    e.append(A(H0, 3.6, 820, '<p class="b muted" style="font-size:56px;line-height:72px">Toi ou ton binôme de box.</p>'))
+    e.append(A(3.8, 10.4, 260, '<h2 class="ts">Les règles</h2>'))
+    rules = [('A', '10 burpees'), ('B', 'Tient la planche pendant ce temps'), ('↻', 'Vous inversez les rôles')]
+    for k, (l, txt) in enumerate(rules):
+        e.append(A(4.2 + k * 0.7, 10.4, 440 + k * 170, f'<div class="step2"><span class="mono ch" style="font-size:56px;font-weight:700;width:80px">{l}</span><span class="b">{txt}</span></div>'))
+    e.append(A(6.4, 10.4, 980, '<p class="hero" style="font-size:180px;line-height:190px">5 tours</p>'))
+    e.append(A(10.6, 15.2, 260, '<h2 class="ts">Qui perd ?</h2>'))
+    e.append(A(11.0, 15.2, 460, '<p class="b" style="font-size:60px;line-height:78px">Le premier qui pose les genoux pendant sa planche.</p>'))
+    e.append(A(11.8, 15.2, 820, '<div class="card2"><p class="rk" style="margin:0">LE GAGE</p><p class="b" style="margin-top:8px;font-weight:600">Il range le matériel des deux.</p></div>'))
+    e.append(A(15.4, None, 360, '<h2 class="tc">Ton binôme<br>est prêt ?</h2>'))
+    e.append(A(15.8, None, 800, '<p class="b">Scaled : planche sur les genoux, burpees sans saut.</p>'))
+    e.append(A(16.4, None, 1020, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à ton binôme de box</p>'))
+    return ''.join(e), 20.5, []
+
+def no_rep():
+    e = []
+    e.append(A(H0, 3.2, 260, '<span class="tag">Standards</span>'))
+    e.append(A(H0, 3.2, 400, '<h1 class="tc" style="font-size:130px;line-height:158px"><span class="ch">4 reps</span><br>que ton coach<br>ne compte pas</h1>'))
+    moves = [('Push-up', 'La poitrine ne touche pas le sol.'),
+             ('Pull-up', 'Le menton ne passe pas au-dessus de la barre.'),
+             ('Toes-to-bar', 'Les deux pieds ne touchent pas la barre ensemble.'),
+             ('Box jump', 'Pas debout, hanches tendues, en haut de la box.')]
+    for k, (name, why) in enumerate(moves):
+        t0 = 3.4 + k * 3.9; t1 = t0 + 3.7
+        e.append(A(t0, t1, 260, f'<p class="mono muted" style="font-size:40px;font-weight:700;margin:0">{k+1}/4</p>'))
+        e.append(A(t0 + 0.1, t1, 360, f'<h2 class="ts" style="font-size:130px;line-height:150px">{name}</h2>'))
+        e.append(A(t0 + 0.6, t1, 590, '<span class="stamp">No rep</span>'))
+        e.append(A(t0 + 1.1, t1, 840, f'<p class="b" style="font-size:58px;line-height:76px">{why}</p>'))
+    e.append(A(19.2, None, 360, '<h2 class="tc">Avoue.</h2>'))
+    e.append(A(19.6, None, 620, '<p class="b">Laquelle tu fais encore ? Dis-le en commentaire.</p>'))
+    e.append(A(20.1, None, 860, '<p class="mono ch" style="font-size:42px;line-height:58px;font-weight:700;margin:0">Envoie-le à celui<br>qui compte large</p>'))
+    return ''.join(e), 22.6, []
+
+def apres_wod():
+    e = []
+    e.append(A(H0, 3.4, 260, '<span class="tag">Récup</span>'))
+    e.append(A(H0, 3.4, 400, '<h1 class="tc" style="font-size:150px;line-height:178px">WOD fini ?<br>Ne t\'assieds<br>pas.</h1>'))
+    e.append(A(H0, 3.4, 980, '<p class="b muted">5 réflexes pour bien finir.</p>'))
+    e.append(A(3.6, 10.6, 260, '<h2 class="ts">Les <span class="ch">5</span> réflexes</h2>'))
+    items = ['Marche quelques minutes', 'Bois de l\'eau', 'Note ton score', 'Range ton matériel', 'Mange un vrai repas ensuite']
+    for k, it in enumerate(items):
+        e.append(A(4.0 + k * 0.7, 10.6, 440 + k * 130,
+                   f'<div style="display:flex;align-items:center;gap:28px;padding:26px 0;border-top:2px solid #2a2e35">'
+                   f'<span class="mono ch" style="font-size:44px;font-weight:700">✓</span><span class="b">{it}</span></div>'))
+    e.append(A(10.8, 15.0, 260, '<p class="mono ch" style="font-size:44px;font-weight:700;margin:0">LE PLUS ZAPPÉ</p>'))
+    e.append(A(11.0, 15.0, 360, '<h2 class="ts">Ranger<br>son matos</h2>'))
+    e.append(A(11.6, 15.0, 680, '<p class="b">Barre, disques, balle : tout reprend sa place. La box, c\'est aussi les autres.</p>'))
+    e.append(A(15.2, None, 360, '<h2 class="tc" style="font-size:150px;line-height:175px">On a tous<br>un binôme<br>allongé<br>par terre</h2>'))
+    e.append(A(16.2, None, 1110, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le-lui</p>'))
+    return ''.join(e), 20.0, []
+
 REELS = {'10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
-         '13-cindy': cindy, '14-quiz-benchmarks': quiz, '15-sac-de-box': sac, '16-mythes': mythes}
+         '13-cindy': cindy, '14-quiz-benchmarks': quiz, '15-sac-de-box': sac, '16-mythes': mythes,
+         '17-a-ou-b-burpees': ab_burpees, '18-defi-binome': defi_binome, '20-no-rep': no_rep, '21-apres-wod': apres_wod}
 
 def page_html(body):
     return (f"<!doctype html><html lang='fr'><head><meta charset='utf-8'><style>{font_faces(FONTS)}\n{CSS}</style></head>"

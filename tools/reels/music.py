@@ -1,6 +1,6 @@
 """Musiques maison WOD Genius, une ambiance par Reel (libres de droits, synthétisées ici).
 Usage : python3 music.py <style> sortie.wav [duree]
-Styles : lofi (88 BPM, RPE), house (120 BPM, Hollow). La boucle électro 128 BPM (Fran) est dans loop.py.
+Styles : lofi (88 BPM, RPE), house (120 BPM, Hollow), synthwave, trap, boombap, phonk, phonk118, garage (126 BPM). La boucle électro 128 BPM (Fran) est dans loop.py.
 """
 import sys, wave
 import numpy as np
@@ -297,18 +297,19 @@ def cowbell(f, d=0.22):
     x = np.sign(np.sin(2 * np.pi * f * t)) + np.sign(np.sin(2 * np.pi * f * 1.48 * t))
     return bp(x, 450, 2600) * np.exp(-t / 0.07) * np.minimum(1, t / 0.001)
 
-def phonk(path, dur, cue=3.6, drop=13.8):
-    """Phonk de salle de sport, 125 BPM, fa mineur : cloche (cowbell) mélodique, 808 saturé, caisse claire en demi-temps."""
-    beat, bar, pre, m, nb = _grid(dur, 125, cue)
+def phonk(path, dur, cue=3.6, drop=13.8, bpm=125, tr=0):
+    """Phonk de salle de sport, 125 BPM, fa mineur : cloche (cowbell) mélodique, 808 saturé, caisse claire en demi-temps.
+    bpm et tr (transposition en demi-tons) permettent une variante (ex. 118 BPM, sol mineur : tr=2)."""
+    beat, bar, pre, m, nb = _grid(dur, bpm, cue)
     s16 = beat / 4
     riff = [0, None, 3, None, 7, 5, None, 3, 0, None, 3, 5, None, 3, -2, None]      # fa, lab, do, sib… (fa mineur)
-    roots = [note(-40), note(-40), note(-45), note(-43)]                              # fa0… réb0, mib0 (808)
+    roots = [note(-40 + tr), note(-40 + tr), note(-45 + tr), note(-43 + tr)]          # fa0… réb0, mib0 (808)
     for b in range(nb):
         t0 = b * bar - pre
         full = t0 >= cue - 0.01; big = t0 >= drop - 0.05
         for k, n in enumerate(riff):
             if n is None: continue
-            m.add(cowbell(note(n - 4)), t0 + k * s16, 0.22 if big else 0.17, 0.15 if k % 2 else -0.15)
+            m.add(cowbell(note(n - 4 + tr)), t0 + k * s16, 0.22 if big else 0.17, 0.15 if k % 2 else -0.15)
         if not full:
             continue
         r = roots[b % 4]
@@ -325,9 +326,46 @@ def phonk(path, dur, cue=3.6, drop=13.8):
     t = tt(bar); riser = hp(rng.standard_normal(len(t)), 800) * (t / bar) ** 2
     m.add(lp(riser, 9000), drop - bar, 0.12)
     t = tt(1.0); m.add(lp(rng.standard_normal(len(t)), 3000) * np.exp(-t / 0.3), drop, 0.18)
-    m.render(path, 0.9); return 125
+    m.render(path, 0.9); return bpm
 
-STYLES = {'lofi': lofi, 'house': house, 'synthwave': synthwave, 'funk': funk, 'trap': trap, 'boombap': boombap, 'phonk': phonk}
+def phonk118(path, dur, cue=3.6, drop=15.2):
+    """Variante du phonk : 118 BPM, sol mineur (Reel 21)."""
+    return phonk(path, dur, cue, drop, bpm=118, tr=2)
+
+# ---------------------------------------------------------------- UK garage 2-step (ajouté le 21 nov. 2026)
+def garage(path, dur, cue=3.4):
+    """UK garage « 2-step », 126 BPM, si bémol mineur : grosse caisse décalée, shuffle, basse sub, accords d'orgue hachés."""
+    beat, bar, pre, m, nb = _grid(dur, 126, cue)
+    s16 = beat / 4; sw = s16 * 0.22                       # shuffle sur les doubles-croches paires
+    chords = [[-11, -8, -4, 1], [-16, -13, -9, -4], [-9, -6, -2, 3], [-13, -9, -6, -1]]   # Sibm7, Solb, Réb, Lab (registre médium)
+    roots = [note(-35), note(-40), note(-32), note(-37)]
+    kick_steps = [0, 10]                                  # 2-step : 1er temps puis contretemps du 3e
+    for b in range(nb):
+        t0 = b * bar - pre; c = b % 4; full = t0 >= cue - 0.01
+        # accords hachés (orgue) : motif syncopé
+        for st in (2, 5, 10, 13):
+            d = s16 * 1.3; ts = tt(d)
+            x = sum(np.sin(2 * np.pi * note(n) * ts) + 0.5 * np.sin(4 * np.pi * note(n) * ts) for n in chords[c]) / len(chords[c])
+            m.add(lp(x, 2600 if full else 1400) * np.exp(-ts / 0.07) * np.minimum(1, ts / 0.002), t0 + st * s16 + (sw if st % 2 else 0), 0.3, 0.2 if st % 4 else -0.2)
+        if not full:
+            m.add(pad([note(n) for n in chords[c]], bar, 900), t0, 0.25)
+            continue
+        for st in kick_steps: m.add(kick(), t0 + st * s16, 0.8)
+        for st in (4, 12): m.add(clap(), t0 + st * s16, 0.32, 0.05); m.add(snare(), t0 + st * s16, 0.18)
+        for k in range(16):
+            tk = t0 + k * s16 + (sw if k % 2 else 0)
+            m.add(hat(0.007, 0.03, 9500), tk, 0.08 if k % 2 else 0.05, -0.25)
+            if k % 4 == 2: m.add(hat(0.04, 0.12, 8000), tk, 0.07, 0.3)
+        # basse sub qui glisse
+        for st, mult, d in ((0, 1, beat * 1.4), (7, 1, beat * 0.6), (10, 1.5, beat * 0.9)):
+            tb = tt(d); f = roots[c] * mult
+            fr = f * (1 + 0.15 * np.exp(-tb / 0.05))
+            x = np.tanh(1.6 * np.sin(2 * np.pi * np.cumsum(fr) / SR)) * np.minimum(1, tb / 0.004) * np.minimum(1, (d - tb) / 0.02)
+            m.add(x, t0 + st * s16, 0.45)
+    delay(m, beat * 0.75, 0.3, 0.18)
+    m.render(path, 1.0); return 126
+
+STYLES = {'lofi': lofi, 'house': house, 'synthwave': synthwave, 'funk': funk, 'trap': trap, 'boombap': boombap, 'phonk': phonk, 'phonk118': phonk118, 'garage': garage}
 if __name__ == '__main__':
     style, out = sys.argv[1], sys.argv[2]
     dur = float(sys.argv[3]) if len(sys.argv) > 3 else 13.5
