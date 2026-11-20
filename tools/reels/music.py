@@ -82,9 +82,9 @@ def delay(m, time, fb=0.35, mix=0.25):
         ch[:] = ch * (1 - mix) + y * mix
 
 # ---------------------------------------------------------------- lo-fi (RPE)
-def lofi(path, dur):
+def lofi(path, dur, accent=9.8, full_at=3.4):
     bpm = 88; beat = 60 / bpm; bar = 4 * beat
-    pre = 3 * bar - 7.2            # temps fort de la mesure 4 calé sur l'exemple chiffré (7,2 s)
+    pre = 3 * bar - accent         # temps fort calé sur l'exemple chiffré
     while pre < 0: pre += bar
     m = Mix(dur, pre)
     # Fmaj7 - Em7 - Dm7 - Cmaj7 (accords en position serrée, tessiture médium)
@@ -100,7 +100,7 @@ def lofi(path, dur):
         m.add(bass, t0, 0.5)
         for k in range(4):
             tk = t0 + k * beat
-            full = tk >= 3.2 - 0.01
+            full = tk >= full_at - 0.01
             if k in (0,) or (k == 2 and full) or (k == 2 and b % 2):
                 m.add(kick(soft=True), tk, 0.75 if full else 0.5)
             if k in (1, 3) and full:
@@ -120,19 +120,19 @@ def lofi(path, dur):
     return bpm
 
 # ---------------------------------------------------------------- minimal house (Hollow)
-def house(path, dur):
+def house(path, dur, start=3.4, cta=14.3):
     bpm = 120; beat = 0.5; bar = 2.0
-    pre = 2 * bar - 3.2            # mesure 3 calée sur l'apparition des étapes (3,2 s)
+    pre = 2 * bar - start          # mesure 3 calée sur l'apparition des étapes
     m = Mix(dur, pre)
     stab = [note(n) for n in (-17, -10, -5, -2, 2)]     # mi, si, mi, sol, si : accord Em(add9) ouvert
     bassline = [note(-41), None, note(-41), note(-29), None, note(-41), note(-38), None]   # mi1 / mi2 / sol1
     nbars = int((dur + pre) / bar) + 1
-    breakdown = 11.2
+    breakdown = start + bar * np.ceil((cta - start) / bar)   # première mesure après le message final
     for b in range(nbars):
         t0 = b * bar - pre
         for k in range(4):
             tk = t0 + k * beat
-            intro = tk < 3.2 - 0.01; brk = tk >= breakdown - 0.01
+            intro = tk < start - 0.01; brk = tk >= breakdown - 0.01
             if not brk: m.add(kick(), tk, 0.7 if intro else 0.85)
             if k in (1, 3) and not intro and not brk: m.add(clap(), tk, 0.3, -0.1)
             m.add(hat(0.05, 0.14, 8000), tk + beat / 2, 0.11 if not brk else 0.06, 0.2)       # charley ouvert à contretemps
@@ -140,18 +140,18 @@ def house(path, dur):
                 m.add(hat(0.008, 0.03, 9000), tk + beat / 4, 0.05, -0.3)
                 m.add(hat(0.008, 0.03, 9000), tk + 3 * beat / 4, 0.05, -0.3)
         # basse en croches
-        if t0 >= 3.2 - bar - 0.01:
+        if t0 >= start - bar - 0.01:
             for k, f in enumerate(bassline):
                 if f is None: continue
                 tk = t0 + k * beat / 2
-                if tk < 3.2 - 0.01 or tk >= breakdown: continue
+                if tk < start - 0.01 or tk >= breakdown: continue
                 d = beat / 2 * 0.85; tb = tt(d)
                 x = lp(saw(f, d, 10), 300) + 0.6 * np.sin(2 * np.pi * f * tb)
                 m.add(np.tanh(1.4 * x) * np.minimum(1, tb / 0.004) * np.minimum(1, (d - tb) / 0.015), tk, 0.42)
         # accord « stab » sur le contretemps du 2e temps, filtre qui s'ouvre au fil des étapes
         for k in (1.5, 3.5) if b % 2 else (1.5,):
             tk = t0 + k * beat
-            cutoff = 900 + 2600 * min(1, max(0, (tk - 3.2) / 6.0))
+            cutoff = 900 + 2600 * min(1, max(0, (tk - start) / 9.0))
             d = 0.3; ts = tt(d)
             x = sum(saw(f, d, 14) for f in stab) / len(stab)
             m.add(lp(x, cutoff) * np.exp(-ts / 0.09) * np.minimum(1, ts / 0.003), tk, 0.45, 0.15)

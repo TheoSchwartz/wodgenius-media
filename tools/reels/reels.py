@@ -13,7 +13,7 @@ from render_slides import font_faces
 from playwright.sync_api import sync_playwright
 
 W, H, FPS = 1080, 1920, 30
-BEEPS = False  # bips jugés pénibles : la musique vient de loop.py
+BEEPS = False  # bips jugés pénibles : la musique vient de loop.py / music.py
 FONTS = HERE.parent / 'fonts'
 
 CSS = """
@@ -74,56 +74,54 @@ def A(t_in, t_out, top, inner, extra=''):
 
 BRAND = f'<div class="brand">{SVG}<span>@wodgenius</span></div>'
 
-# ---------------- Fran ----------------
+# ---------------- Fran (17 s) ----------------
 def fran():
     e = []
-    e.append(A(0.0, 3.0, 300, '<span class="tag">Benchmark</span>'))
-    e.append(A(0.15, 3.0, 420, '<h1 class="tc" style="font-size:300px;line-height:320px">Fran</h1>'))
-    e.append(A(0.45, 3.0, 760, '<p class="hero" style="font-size:190px;line-height:200px">21-15-9</p>'))
-    e.append(A(0.9, 3.0, 1010, '<p class="b" style="font-size:60px;line-height:76px">Tu connais ton temps ?</p>'))
-    e.append(A(3.2, 6.6, 300, '<h2 class="ts">Le WOD</h2>'))
+    e.append(A(0.0, 3.2, 300, '<span class="tag">Benchmark</span>'))
+    e.append(A(0.15, 3.2, 420, '<h1 class="tc" style="font-size:300px;line-height:320px">Fran</h1>'))
+    e.append(A(0.45, 3.2, 760, '<p class="hero" style="font-size:190px;line-height:200px">21-15-9</p>'))
+    e.append(A(0.9, 3.2, 1010, '<p class="b" style="font-size:60px;line-height:76px">Tu connais ton temps ?</p>'))
+    e.append(A(3.4, 7.8, 300, '<h2 class="ts">Le WOD</h2>'))
     rows = [('FORMAT', 'Pour le temps'), ('REPS', '<span class="mono ch" style="font-weight:700">21-15-9</span>'),
             ('MOUVEMENT 1', 'Thruster'), ('MOUVEMENT 2', 'Pull-up'), ('CHARGE RX', '43 kg · 29 kg')]
     for k, (a, b) in enumerate(rows):
-        e.append(A(3.45 + k * 0.25, 6.6, 500 + k * 120, f'<div class="row"><span class="rk">{a}</span><span style="font-weight:600">{b}</span></div>'))
-    e.append(A(6.8, 10.4, 300, '<span class="tag ol">Exemple illustratif</span>'))
-    e.append(A(6.9, 10.4, 440, '<p class="b muted">Fran scaled, chrono en main</p>'))
-    e.append(A(6.9, 10.4, 560, '<p class="hero cnt" data-from="0" data-to="365" data-t0="7.1" data-t1="9.6" data-fmt="time" data-lin="1" style="font-size:280px;line-height:300px">0:00</p>'))
-    e.append(A(7.0, 10.4, 920, '<p class="mono" style="font-size:110px;line-height:130px;font-weight:700;margin:0">'
-               '<span class="hl" data-on="7.1">21</span> <span class="muted">·</span> <span class="hl" data-on="8.1">15</span> <span class="muted">·</span> <span class="hl" data-on="8.9">9</span></p>'))
-    e.append(A(9.7, 10.4, 1110, '<p class="b">Temps final : <span class="mono ch" style="font-weight:700">6:05</span></p>'))
-    e.append(A(10.6, None, 420, '<h2 class="tc">Note<br>ton temps</h2>'))
-    e.append(A(10.9, None, 860, '<p class="b">Même version, même standards. Refais-le dans quelques mois : le chrono dira le reste.</p>'))
-    e.append(A(11.3, None, 1150, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage à ton binôme</p>'))
-    sounds = [(0.0, 'click'), (3.2, 'click'), (6.8, 'click'), (7.1, 'go'), (9.6, 'stop'), (10.6, 'click')]
-    return ''.join(e), 13.5, sounds
+        e.append(A(3.7 + k * 0.4, 7.8, 500 + k * 120, f'<div class="row"><span class="rk">{a}</span><span style="font-weight:600">{b}</span></div>'))
+    e.append(A(8.0, 12.4, 300, '<span class="tag ol">Exemple illustratif</span>'))
+    e.append(A(8.1, 12.4, 440, '<p class="b muted">Fran scaled, chrono en main</p>'))
+    e.append(A(8.1, 12.4, 560, '<p class="hero cnt" data-from="0" data-to="365" data-t0="8.4" data-t1="11.0" data-fmt="time" data-lin="1" style="font-size:280px;line-height:300px">0:00</p>'))
+    e.append(A(8.2, 12.4, 920, '<p class="mono" style="font-size:110px;line-height:130px;font-weight:700;margin:0">'
+               '<span class="hl" data-on="8.4">21</span> <span class="muted">·</span> <span class="hl" data-on="9.4">15</span> <span class="muted">·</span> <span class="hl" data-on="10.2">9</span></p>'))
+    e.append(A(11.1, 12.4, 1110, '<p class="b">Temps final : <span class="mono ch" style="font-weight:700">6:05</span></p>'))
+    e.append(A(12.6, None, 420, '<h2 class="tc">Note<br>ton temps</h2>'))
+    e.append(A(13.0, None, 860, '<p class="b">Même version, même standards. Refais-le dans quelques mois : le chrono dira le reste.</p>'))
+    e.append(A(13.6, None, 1150, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage à ton binôme</p>'))
+    return ''.join(e), 17.0, []
 
-# ---------------- RPE ----------------
+# ---------------- RPE (20 s) ----------------
 def rpe():
     e = []
-    e.append(A(0.0, 3.0, 300, '<span class="tag">Data</span>'))
-    e.append(A(0.15, 3.0, 440, '<p class="hero" style="font-size:300px;line-height:300px">8/10</p>'))
-    e.append(A(0.5, 3.0, 780, '<h1 class="tc">Ton effort<br>a une note</h1>'))
-    e.append(A(3.2, 7.0, 300, '<h2 class="ts">L\'échelle RPE</h2>'))
+    e.append(A(0.0, 3.2, 300, '<span class="tag">Data</span>'))
+    e.append(A(0.15, 3.2, 440, '<p class="hero" style="font-size:300px;line-height:300px">8/10</p>'))
+    e.append(A(0.5, 3.2, 780, '<h1 class="tc">Ton effort<br>a une note</h1>'))
+    e.append(A(3.4, 9.6, 300, '<h2 class="ts">L\'échelle RPE</h2>'))
     scale = [('10', 'Plus aucune rep possible', 100, True), ('9', '1 rep en réserve', 85, False),
              ('8', '2 reps en réserve', 70, False), ('7', '3 reps en réserve', 55, False)]
     for k, (n, lab, w, acc) in enumerate(scale):
-        t = 3.5 + k * 0.45
+        t = 3.8 + k * 0.8
         col = '#f3c34f' if acc else '#5e646c'
-        e.append(A(t, 7.0, 480 + k * 205,
+        e.append(A(t, 9.6, 480 + k * 205,
                    f'<div style="display:flex;align-items:baseline;gap:28px"><span class="mono" style="font-size:72px;font-weight:700;width:110px;color:{"#f3c34f" if acc else "#f2efe8"}">{n}</span>'
                    f'<span class="b">{lab}</span></div>'
                    f'<div class="bar grow" data-t0="{t}" style="width:{w}%;margin-top:18px;background:{col}"></div>'))
-    e.append(A(7.2, 10.6, 300, '<span class="tag ol">Exemple illustratif</span>'))
-    e.append(A(7.3, 10.6, 440, '<h2 class="ts">Même charge,<br>moins d\'effort</h2>'))
-    e.append(A(7.5, 10.6, 740, '<p class="b muted">Squat 80 kg × 5 · 4 semaines</p>'))
-    e.append(A(7.6, 10.6, 860, '<p class="hero" style="font-size:190px;line-height:220px">RPE&nbsp;<span class="cnt" data-from="9" data-to="7" data-t0="7.9" data-t1="9.4" data-fmt="half">9</span></p>'))
-    e.append(A(9.6, 10.6, 1180, '<p class="b">Le même travail coûte moins cher : tu progresses.</p>'))
-    e.append(A(10.8, None, 420, '<h2 class="tc">Note-le</h2>'))
-    e.append(A(11.1, None, 680, '<p class="b">Un chiffre de 1 à 10 après chaque WOD. Dix secondes, et tes séances deviennent comparables.</p>'))
-    e.append(A(11.5, None, 1040, '<p class="mono ch" style="font-size:40px;line-height:56px;font-weight:700;margin:0">L\'app WOD Genius arrive.<br>Suis @wodgenius</p>'))
-    sounds = [(0.0, 'click'), (3.2, 'click')] + [(3.5 + k * 0.45, 'tick') for k in range(4)] + [(7.2, 'click'), (9.4, 'stop'), (10.8, 'click')]
-    return ''.join(e), 13.5, sounds
+    e.append(A(9.8, 15.0, 300, '<span class="tag ol">Exemple illustratif</span>'))
+    e.append(A(9.9, 15.0, 440, '<h2 class="ts">Même charge,<br>moins d\'effort</h2>'))
+    e.append(A(10.3, 15.0, 740, '<p class="b muted">Squat 80 kg × 5 · 4 semaines</p>'))
+    e.append(A(10.5, 15.0, 860, '<p class="hero" style="font-size:190px;line-height:220px">RPE&nbsp;<span class="cnt" data-from="9" data-to="7" data-t0="11.0" data-t1="12.8" data-fmt="half">9</span></p>'))
+    e.append(A(13.0, 15.0, 1180, '<p class="b">Le même travail coûte moins cher : tu progresses.</p>'))
+    e.append(A(15.2, None, 420, '<h2 class="tc">Note-le</h2>'))
+    e.append(A(15.6, None, 680, '<p class="b">Un chiffre de 1 à 10 après chaque WOD. Dix secondes, et tes séances deviennent comparables.</p>'))
+    e.append(A(16.3, None, 1040, '<p class="mono ch" style="font-size:40px;line-height:56px;font-weight:700;margin:0">L\'app WOD Genius arrive.<br>Suis @wodgenius</p>'))
+    return ''.join(e), 20.0, []
 
 # ---------------- Hollow ----------------
 def figure(step):
@@ -141,23 +139,22 @@ def figure(step):
 
 def hollow():
     e = []
-    e.append(A(0.0, 3.0, 300, '<span class="tag">Scaling</span>'))
-    e.append(A(0.15, 3.0, 420, '<h1 class="tc">Le hollow<br>avant le<br>kipping</h1>'))
-    e.append(A(0.7, 3.0, 1080, '<p class="b muted">La position de base de la gym, en 4 étapes.</p>'))
-    e.append(A(3.2, 10.2, 300, '<h2 class="ts">4 étapes</h2>'))
+    e.append(A(0.0, 3.2, 300, '<span class="tag">Scaling</span>'))
+    e.append(A(0.15, 3.2, 420, '<h1 class="tc">Le hollow<br>avant le<br>kipping</h1>'))
+    e.append(A(0.7, 3.2, 1080, '<p class="b muted">La position de base de la gym, en 4 étapes.</p>'))
+    e.append(A(3.4, 14.1, 300, '<h2 class="ts">4 étapes</h2>'))
     steps = ['Genoux pliés, bras le long du corps', 'Une jambe tendue, l\'autre pliée',
              'Deux jambes tendues, bras le long du corps', 'Jambes tendues, bras derrière la tête']
     for k, txt in enumerate(steps):
-        t0 = 3.5 + k * 1.6
-        t1 = t0 + 1.6 if k < 3 else 10.2
+        t0 = 3.7 + k * 2.6
+        t1 = t0 + 2.6 if k < 3 else 14.1
         e.append(A(t0, t1, 540, figure(k + 1)))
         e.append(A(t0, t1, 980, f'<p class="mono ch" style="font-size:44px;font-weight:700;margin:0">ÉTAPE 0{k+1}</p><p class="b" style="margin-top:16px">{txt}</p>'))
-    e.append(A(3.6, 10.2, 1250, '<p class="b muted" style="font-size:40px;line-height:54px"><span class="ch">●</span> bas du dos plaqué au sol</p>'))
-    e.append(A(10.4, None, 420, '<h2 class="tc">Gaine<br>d\'abord</h2>'))
-    e.append(A(10.7, None, 860, '<p class="b">Le bas du dos décolle ? Reviens à l\'étape d\'avant.</p>'))
-    e.append(A(11.1, None, 1060, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage</p>'))
-    sounds = [(0.0, 'click'), (3.2, 'click')] + [(3.5 + k * 1.6, 'tick') for k in range(4)] + [(10.4, 'click')]
-    return ''.join(e), 13.5, sounds
+    e.append(A(3.8, 14.1, 1250, '<p class="b muted" style="font-size:40px;line-height:54px"><span class="ch">●</span> bas du dos plaqué au sol</p>'))
+    e.append(A(14.3, None, 420, '<h2 class="tc">Gaine<br>d\'abord</h2>'))
+    e.append(A(14.7, None, 860, '<p class="b">Le bas du dos décolle ? Reviens à l\'étape d\'avant.</p>'))
+    e.append(A(15.2, None, 1060, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage</p>'))
+    return ''.join(e), 18.5, []
 
 REELS = {'10-fran': fran, '11-rpe': rpe, '12-hollow': hollow}
 
