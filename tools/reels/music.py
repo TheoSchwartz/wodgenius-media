@@ -163,7 +163,136 @@ def house(path, dur, start=3.4, cta=14.3):
     m.render(path, 0.9)
     return bpm
 
-STYLES = {'lofi': lofi, 'house': house}
+
+# ---------------------------------------------------------------- styles ajoutés le 20 nov. 2026
+def _grid(dur, bpm, cue):
+    beat = 60 / bpm; bar = 4 * beat
+    k = int(np.ceil(cue / bar)); pre = k * bar - cue
+    return beat, bar, pre, Mix(dur, pre), int((dur + pre) / bar) + 1
+
+def pluck(f, d=0.3, cut=3000, dec=0.09, harm=18):
+    t = tt(d); x = saw(f, d, harm) + 0.4 * saw(f * 1.004, d, harm)
+    return lp(x, cut) * np.exp(-t / dec) * np.minimum(1, t / 0.002)
+
+def pad(freqs, d, cut=1500):
+    t = tt(d); x = np.zeros(len(t))
+    for f in freqs:
+        x += saw(f, d, 10) + saw(f * 1.006, d, 10) + saw(f * 0.994, d, 10)
+    env = np.minimum(1, t / 0.25) * np.minimum(1, (d - t) / 0.3)
+    return lp(x / (3 * len(freqs)), cut) * env
+
+def bell(f, d=0.8):
+    t = tt(d)
+    return (np.sin(2 * np.pi * f * t) + 0.35 * np.sin(2 * np.pi * f * 3.01 * t) * np.exp(-t / 0.15)) * np.exp(-t / 0.35) * np.minimum(1, t / 0.002)
+
+def sub808(f, d):
+    t = tt(d); fr = f * (1 + 0.6 * np.exp(-t / 0.03))
+    x = np.sin(2 * np.pi * np.cumsum(fr) / SR)
+    return np.tanh(1.8 * x) * np.exp(-t / (d / 2.5)) * np.minimum(1, t / 0.003)
+
+def synthwave(path, dur, cue=3.4):
+    """Synthwave 108 BPM, la mineur : nappes, arpège en croches, caisse claire ample."""
+    beat, bar, pre, m, nb = _grid(dur, 108, cue)
+    chords = [[-12, -9, -5, 0], [-16, -12, -9, -4], [-9, -5, -2, 3], [-14, -10, -7, -2]]   # Am F C G
+    roots = [note(-36), note(-40), note(-33), note(-38)]
+    for b in range(nb):
+        t0 = b * bar - pre; c = b % 4; full = t0 >= cue - 0.01
+        m.add(pad([note(n) for n in chords[c]], bar, 1400 if full else 900), t0, 0.5)
+        for k in range(8):
+            tk = t0 + k * beat / 2
+            n = chords[c][[0, 1, 2, 3, 2, 1, 2, 3][k]] + 12
+            m.add(pluck(note(n), 0.28, 2600 if full else 1500, 0.08), tk, 0.14, -0.3 if k % 2 else 0.3)
+            if full:
+                tb = tt(beat / 2 * 0.85)
+                m.add(lp(saw(roots[c] * (2 if k % 2 else 1), beat / 2 * 0.85, 10), 500) * np.minimum(1, tb / 0.004), tk, 0.32)
+        if full:
+            for k in range(4):
+                tk = t0 + k * beat
+                if k in (0, 2): m.add(kick(), tk, 0.75)
+                if k in (1, 3):
+                    t = tt(0.6); big = bp(rng.standard_normal(len(t)), 900, 7000) * np.exp(-t / 0.18)
+                    m.add(big, tk, 0.13)
+                    m.add(snare(), tk, 0.3)
+                for h in range(2): m.add(hat(0.01, 0.04, 8000), tk + h * beat / 2, 0.06, 0.2)
+    delay(m, beat * 0.75, 0.4, 0.28)
+    m.render(path, 1.0); return 108
+
+def funk(path, dur, cue=3.4):
+    """Funk 112 BPM, mi mineur : basse syncopée, accords courts à contretemps, caisse claire avec notes fantômes."""
+    beat, bar, pre, m, nb = _grid(dur, 112, cue)
+    s16 = beat / 4
+    bass_pat = [(0, -29), (3, -29), (6, -26), (8, -29), (10, -24), (11, -22), (14, -29)]   # mi2, sol2, la2, si2
+    stab = [note(n) for n in (-5, -1, 2, 7)]                                                 # mi9 en position médium
+    for b in range(nb):
+        t0 = b * bar - pre; full = t0 >= cue - 0.01
+        for st, n in bass_pat:
+            d = s16 * 1.6; tb = tt(d); f = note(n - 12)
+            x = lp(saw(f, d, 14), 900) * np.exp(-tb / 0.12) * np.minimum(1, tb / 0.003)
+            m.add(np.tanh(1.5 * x), t0 + st * s16, 0.45)
+        for k in range(16):
+            tk = t0 + k * s16
+            m.add(hat(0.008, 0.03, 8000), tk + (0.012 if k % 2 else 0), 0.06 if k % 2 else 0.09, 0.25)
+            if not full: continue
+            if k in (0, 7, 10): m.add(kick(), tk, 0.75)
+            if k in (4, 12): m.add(snare(), tk, 0.4)
+            if k in (6, 9, 15): m.add(snare(soft=True), tk, 0.08)
+            if k in (2, 6, 14):
+                d = 0.12; ts = tt(d)
+                x = sum(np.sign(np.sin(2 * np.pi * f * ts)) for f in stab) / len(stab)
+                m.add(lp(x, 2400) * np.exp(-ts / 0.05), tk, 0.16, -0.25)
+    m.render(path, 1.0); return 112
+
+def trap(path, dur, cue=3.4):
+    """Hip-hop « trap » posé, 72 BPM, do mineur : 808, charleys en doubles-croches avec roulements, cloche."""
+    beat, bar, pre, m, nb = _grid(dur, 72, cue)
+    s16 = beat / 4
+    mel = [-9, -6, -2, 1, -2, -6, -4, -9]      # do, mib, sol, sib… (pentatonique de do mineur)
+    roots = [note(-33 - 12), note(-37 - 12)]  # do1, lab0
+    for b in range(nb):
+        t0 = b * bar - pre; full = t0 >= cue - 0.01
+        for k in range(8):
+            m.add(bell(note(mel[k] + 12), 0.7), t0 + k * beat / 2, 0.16, 0.2 if k % 2 else -0.2)
+        m.add(pad([note(n) for n in (-21, -18, -14)], bar, 1100), t0, 0.28)
+        if not full: continue
+        r = roots[b % 2]
+        m.add(sub808(r * 2, beat * 1.5), t0, 0.6); m.add(sub808(r * 2, beat), t0 + 2.5 * beat, 0.5)
+        m.add(kick(), t0, 0.5); m.add(kick(), t0 + 2.5 * beat, 0.4)
+        m.add(clap(), t0 + 2 * beat, 0.35)
+        for k in range(16):
+            tk = t0 + k * s16
+            if b % 2 and k in (13, 14, 15):        # roulement en triples-croches
+                for r3 in range(2): m.add(hat(0.006, 0.02, 9000), tk + r3 * s16 / 2, 0.06, 0.3)
+            else:
+                m.add(hat(0.008, 0.03, 9000), tk, 0.07 if k % 2 else 0.09, 0.3)
+    delay(m, beat * 0.5, 0.3, 0.18)
+    m.render(path, 1.0); return 72
+
+def boombap(path, dur, cue=3.4):
+    """Boom-bap 94 BPM, ré mineur : piano jazzy, contrebasse, batterie qui balance."""
+    beat, bar, pre, m, nb = _grid(dur, 94, cue)
+    chords = [[-19, -16, -12, -7], [-14, -10, -7, -3], [-21, -17, -14, -10], [-12, -9, -5, 0]]   # Dm9, G7, Cmaj7, A7-ish
+    roots = [note(-31 - 12), note(-26 - 12), note(-33 - 12), note(-24 - 12)]
+    sw = beat / 2 * 0.16
+    for b in range(nb):
+        t0 = b * bar - pre; c = b % 4; full = t0 >= cue - 0.01
+        m.add(epiano([note(n) for n in chords[c]], beat * 1.8), t0, 0.6)
+        m.add(epiano([note(n) for n in chords[c]], beat * 1.4), t0 + 2.5 * beat + sw, 0.4)
+        if not full:
+            continue
+        for k, st in enumerate([0, 1.5, 2, 3]):
+            d = beat * 0.9; tb = tt(d); f = roots[c] * (1.5 if k == 2 else 1)
+            m.add(np.sin(2 * np.pi * f * tb) * np.exp(-tb / 0.35) * np.minimum(1, tb / 0.01), t0 + st * beat, 0.5)
+        for k in range(8):
+            tk = t0 + k * beat / 2 + (sw if k % 2 else 0)
+            if k in (0, 3, 5): m.add(kick(soft=True), tk, 0.8)
+            if k in (2, 6): m.add(snare(), tk, 0.45)
+            m.add(hat(0.015, 0.05, 7000), tk, 0.07 if k % 2 else 0.1, 0.2)
+    n = m.n; crackle = np.zeros(n); idx = rng.integers(0, n, size=int((dur + pre) * 10)); crackle[idx] = rng.uniform(-1, 1, len(idx))
+    c = hp(crackle, 1500) * 0.08; m.L += c; m.R += np.roll(c, 97)
+    m.L = lp(m.L, 9000); m.R = lp(m.R, 9000)
+    m.render(path, 1.0); return 94
+
+STYLES = {'lofi': lofi, 'house': house, 'synthwave': synthwave, 'funk': funk, 'trap': trap, 'boombap': boombap}
 if __name__ == '__main__':
     style, out = sys.argv[1], sys.argv[2]
     dur = float(sys.argv[3]) if len(sys.argv) > 3 else 13.5

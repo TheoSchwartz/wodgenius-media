@@ -34,6 +34,15 @@ html,body{margin:0;background:#0e1013}
 .brand svg{width:48px;height:78px;display:block;transform:translateY(-15px)}
 .brand .acc{fill:#f3c34f}.brand .accs{stroke:#f3c34f}
 .hl{color:#5e646c;transition:none}
+.vbar{width:46px;border-radius:8px 8px 0 0;transform-origin:bottom center}
+.grp{flex:1;display:flex;justify-content:center;align-items:flex-end;gap:10px}
+.col{display:flex;flex-direction:column;align-items:center;gap:8px}
+.v{font-family:'JetBrains Mono',monospace;font-size:28px;line-height:32px;color:#9ba1a8}
+.vA{color:#f3c34f;font-weight:700}
+.xl{flex:1;text-align:center;font-family:'JetBrains Mono',monospace;font-size:30px;color:#9ba1a8}
+.pill{display:inline-flex;align-items:center;height:76px;padding:0 36px;border-radius:999px;border:3px solid #f3c34f;color:#f2efe8;font-size:42px}
+.step2{display:flex;align-items:baseline;gap:24px;padding:28px 0;border-top:2px solid #2a2e35}
+.card2{background:#1a1d22;border-radius:24px;padding:36px 48px}
 .bar{height:56px;border-radius:0 10px 10px 0;background:#5e646c;transform-origin:left center}
 """
 
@@ -57,6 +66,10 @@ function frame(t){
   }
   for (const e of document.querySelectorAll('.hl')){
     e.style.color = t >= +e.dataset.on ? '#f3c34f' : '#5e646c';
+  }
+  for (const e of document.querySelectorAll('.growy')){
+    const p = ease((t - +e.dataset.t0) / 0.6);
+    e.style.transform = `scaleY(${p.toFixed(3)})`;
   }
   for (const e of document.querySelectorAll('.grow')){
     const p = ease((t - +e.dataset.t0) / 0.6);
@@ -156,7 +169,105 @@ def hollow():
     e.append(A(15.2, None, 1060, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage</p>'))
     return ''.join(e), 18.5, []
 
-REELS = {'10-fran': fran, '11-rpe': rpe, '12-hollow': hollow}
+# ---------------- Reels du lot 1 (novembre, week-ends) ----------------
+def vbars(pairs, t0, step, scale, hmax):
+    out = []
+    for k, (a, b) in enumerate(pairs):
+        t = t0 + k * step
+        def bar(v, acc):
+            if v is None:
+                return '<div class="col"><span class="v">–</span><div style="width:46px;height:0"></div></div>'
+            return (f'<div class="col"><span class="v{" vA" if acc else ""}">{v}</span>'
+                    f'<div class="vbar growy" data-t0="{t}" style="height:{int(v*scale)}px;background:{"#f3c34f" if acc else "#5e646c"}"></div></div>')
+        out.append(f'<div class="grp">{bar(a, True)}{bar(b, False)}</div>')
+    return f'<div style="display:flex;align-items:flex-end;height:{hmax}px;border-bottom:2px solid #2a2e35">{"".join(out)}</div>'
+
+def pacing():
+    e = []
+    e.append(A(0.0, 3.2, 300, '<span class="tag">Data</span>'))
+    e.append(A(0.15, 3.2, 420, '<p class="hero" style="font-size:230px;line-height:240px">8 vs 6</p>'))
+    e.append(A(0.5, 3.2, 700, '<h1 class="tc">Départ<br>canon ?</h1>'))
+    e.append(A(0.9, 3.2, 1120, '<p class="b muted">AMRAP 12 min : qui fait le plus de tours ?</p>'))
+    e.append(A(3.4, 9.4, 300, '<span class="tag ol">Exemple illustratif</span>'))
+    e.append(A(3.5, 9.4, 400, '<h2 class="ts">Temps par tour</h2>'))
+    e.append(A(3.7, 9.4, 560, '<div style="display:flex;gap:40px"><span class="b" style="font-size:38px"><span class="ch">■</span> Rythme régulier</span><span class="b muted" style="font-size:38px">■ Départ canon</span></div>'))
+    pairs = [(88, 70), (88, 80), (89, 95), (90, 110), (90, 125), (91, 140)]
+    e.append(A(3.9, 9.4, 660, vbars(pairs, 4.1, 0.5, 3.4, 520)))
+    e.append(A(4.0, 9.4, 1200, '<div style="display:flex">' + ''.join(f'<span class="xl">T{k+1}</span>' for k in range(6)) + '</div>'))
+    e.append(A(7.0, 9.4, 1270, '<p class="b muted" style="font-size:40px;line-height:54px">Secondes par tour. Le départ canon ralentit à chaque tour.</p>'))
+    e.append(A(9.6, 13.8, 340, '<h2 class="ts">En 12 minutes</h2>'))
+    e.append(A(10.0, 13.8, 560, '<p class="hero" style="font-size:220px;line-height:230px">8<span style="font-size:70px;letter-spacing:0;margin-left:28px">tours</span></p><p class="b ch">Rythme régulier</p>'))
+    e.append(A(10.6, 13.8, 900, '<p class="hero" style="font-size:220px;line-height:230px;color:#5e646c">6<span style="font-size:70px;letter-spacing:0;margin-left:28px">tours</span></p><p class="b muted">Départ canon</p>'))
+    e.append(A(14.0, None, 300, '<h2 class="ts">Ton plan</h2>'))
+    for k, (l, txt) in enumerate([('A', 'Premier tour à 85–90 % de ton max'), ('B', 'Même découpage des reps à chaque tour'), ('C', 'Accélère dans les 2 dernières minutes')]):
+        e.append(A(14.3 + k * 0.6, None, 500 + k * 170, f'<div class="step2"><span class="mono ch" style="font-size:56px;font-weight:700;width:80px">{l}</span><span class="b">{txt}</span></div>'))
+    e.append(A(16.3, None, 1080, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage</p>'))
+    return ''.join(e), 19.5, []
+
+def tabata():
+    e = []
+    e.append(A(0.0, 3.2, 300, '<span class="tag">Tabata</span>'))
+    e.append(A(0.15, 3.2, 420, '<p class="hero" style="font-size:240px;line-height:250px">20/10</p>'))
+    e.append(A(0.5, 3.2, 700, '<h1 class="tc">3 erreurs<br>à éviter</h1>'))
+    e.append(A(0.9, 3.2, 1120, '<p class="b muted">8 rounds, 4 minutes. Pas le droit de les gâcher.</p>'))
+    errs = [('Partir<br>à 100 %', 'Ton score, c\'est ton round le plus faible. Un départ à fond le fait chuter.', None),
+            ('Un mouvement<br>trop technique', 'À la fatigue, la technique se dégrade. Privilégie :', ['Air squats', 'Burpees', 'Rameur', 'Vélo']),
+            ('Ne pas<br>compter', 'Note tes reps à chaque round : c\'est le seul moyen de connaître ton vrai score.', None)]
+    for k, (title, txt, pills) in enumerate(errs):
+        t0 = 3.4 + k * 4.2; t1 = t0 + 4.0
+        e.append(A(t0, t1, 300, f'<p class="mono ch" style="font-size:48px;font-weight:700;margin:0">ERREUR {k+1}</p>'))
+        e.append(A(t0 + 0.2, t1, 400, f'<h2 class="ts">{title}</h2>'))
+        e.append(A(t0 + 0.7, t1, 700, f'<p class="b">{txt}</p>'))
+        if pills:
+            e.append(A(t0 + 1.2, t1, 920, '<div style="display:flex;flex-wrap:wrap;gap:20px">' + ''.join(f'<span class="pill">{p}</span>' for p in pills) + '</div>'))
+    e.append(A(16.2, None, 420, '<h2 class="tc">4 minutes<br>bien faites</h2>'))
+    e.append(A(16.6, None, 860, '<p class="b">Un mouvement simple, un rythme régulier, et de quoi noter.</p>'))
+    e.append(A(17.1, None, 1060, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage</p>'))
+    return ''.join(e), 20.0, []
+
+def emom():
+    e = []
+    e.append(A(0.0, 3.2, 300, '<span class="tag">EMOM</span>'))
+    e.append(A(0.15, 3.2, 420, '<p class="hero" style="font-size:240px;line-height:250px">00:40</p>'))
+    e.append(A(0.5, 3.2, 700, '<h1 class="tc">La règle<br>des 40 s</h1>'))
+    e.append(A(0.9, 3.2, 1120, '<p class="b muted">Pour tenir jusqu\'à la dernière minute.</p>'))
+    e.append(A(3.4, 8.4, 300, '<h2 class="ts">Le principe</h2>'))
+    e.append(A(3.8, 8.4, 480, '<p class="b">Chaque minute se partage entre travail et repos.</p>'))
+    e.append(A(4.3, 8.4, 700, '<div style="display:flex;height:96px;border-radius:12px;overflow:hidden">'
+               '<div class="grow" data-t0="4.5" style="width:66.7%;background:#f3c34f;transform-origin:left"></div>'
+               '<div class="grow" data-t0="5.0" style="width:33.3%;background:#5e646c;transform-origin:left"></div></div>'
+               '<div style="display:flex;justify-content:space-between;margin-top:20px" class="mono"><span class="ch" style="font-size:36px;font-weight:700">TRAVAIL · 40 s</span><span class="muted" style="font-size:36px">REPOS · 20 s</span></div>'))
+    e.append(A(5.6, 8.4, 960, '<p class="b">Si le travail mange toute la minute, tout s\'effondre.</p>'))
+    e.append(A(8.6, 13.0, 360, '<p class="hero" style="font-size:180px;line-height:200px">30–40 s</p>'))
+    e.append(A(9.0, 13.0, 620, '<h2 class="ts">de travail<br>par minute</h2>'))
+    e.append(A(9.6, 13.0, 930, '<p class="b">Garde au moins <span class="ch" style="font-weight:600">20 s de repos</span> : c\'est ce qui te fait tenir.</p>'))
+    e.append(A(13.2, None, 300, '<h2 class="ts">Ajuste<br>en direct</h2>'))
+    e.append(A(13.6, None, 600, '<div class="card2"><p class="rk" style="margin:0">MINUTE 1 FINIE APRÈS 45 S ?</p><p class="b" style="margin-top:12px;font-weight:600">Retire 2 reps dès la minute 2.</p></div>'))
+    e.append(A(14.4, None, 870, '<div class="card2"><p class="rk" style="margin:0">FINIE EN 25 S ?</p><p class="b" style="margin-top:12px;font-weight:600">Ajoute 1 à 2 reps la prochaine fois.</p></div>'))
+    e.append(A(15.4, None, 1160, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage à ton binôme</p>'))
+    return ''.join(e), 19.0, []
+
+def scaling():
+    e = []
+    e.append(A(0.0, 3.2, 300, '<span class="tag">Scaling</span>'))
+    e.append(A(0.15, 3.2, 420, '<p class="hero" style="font-size:220px;line-height:220px">3</p>'))
+    e.append(A(0.5, 3.2, 660, '<h1 class="tc">Scaler<br>n\'est pas<br>tricher</h1>'))
+    e.append(A(3.4, 7.6, 300, '<h2 class="ts">La règle d\'or</h2>'))
+    e.append(A(3.8, 7.6, 520, '<p class="b">Garde le stimulus : même durée, même intensité.</p>'))
+    e.append(A(4.6, 7.6, 720, '<p class="b" style="font-weight:600">Change tout le reste.</p>'))
+    levers = [('La charge', 'Thruster', '40 kg', '30 kg'), ('Le volume', 'Reps', '21-15-9', '15-12-9'), ('Le mouvement', 'Gym', 'Pull-up', 'Ring row')]
+    for k, (name, what, a, b) in enumerate(levers):
+        t0 = 7.8 + k * 2.8; t1 = t0 + 2.6
+        e.append(A(t0, t1, 300, f'<p class="mono ch" style="font-size:48px;font-weight:700;margin:0">LEVIER {k+1}</p>'))
+        e.append(A(t0 + 0.15, t1, 400, f'<h2 class="ts">{name}</h2>'))
+        e.append(A(t0 + 0.5, t1, 640, f'<p class="rk" style="margin:0">{what.upper()}</p><p class="mono" style="font-size:72px;line-height:90px;font-weight:700;margin:12px 0 0"><span class="muted">{a}</span> <span class="ch">→ {b}</span></p>'))
+    e.append(A(16.4, None, 420, '<h2 class="tc">Pas d\'ego</h2>'))
+    e.append(A(16.8, None, 680, '<p class="b">Le meilleur WOD est celui que tu finis avec une technique propre.</p>'))
+    e.append(A(17.3, None, 920, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage à ton binôme</p>'))
+    return ''.join(e), 20.0, []
+
+REELS = {'10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
+         '03-emom': emom, '04-pacing': pacing, '05-scaling': scaling, '09-tabata': tabata}
 
 def page_html(body):
     return (f"<!doctype html><html lang='fr'><head><meta charset='utf-8'><style>{font_faces(FONTS)}\n{CSS}</style></head>"
