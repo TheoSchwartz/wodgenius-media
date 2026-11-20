@@ -313,7 +313,7 @@ def sac():
     e.append(A(0.0, 3.2, 300, '<span class="tag">Box</span>'))
     e.append(A(0.15, 3.2, 420, '<p class="hero" style="font-size:240px;line-height:240px">7</p>'))
     e.append(A(0.5, 3.2, 680, '<h1 class="tc"><span class="ch">Essentiels</span><br>dans ton<br>sac de box</h1>'))
-    items = ['Corde à sauter', 'Gourde', 'Serviette', 'Protège-mains', 'Bandes de poignets', 'Chaussures stables', 'De quoi noter tes scores']
+    items = ['Corde à sauter', 'Gourde', 'Serviette', 'Maniques', 'Bandes de poignets', 'Chaussures stables', 'De quoi noter tes scores']
     e.append(A(3.4, 12.2, 300, '<h2 class="ts">Les essentiels</h2>'))
     for k, it in enumerate(items):
         last = k == len(items) - 1
