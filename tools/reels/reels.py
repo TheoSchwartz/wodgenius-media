@@ -43,6 +43,7 @@ html,body{margin:0;background:#0e1013}
 .pill{display:inline-flex;align-items:center;height:76px;padding:0 36px;border-radius:999px;border:3px solid #f3c34f;color:#f2efe8;font-size:42px}
 .step2{display:flex;align-items:baseline;gap:24px;padding:28px 0;border-top:2px solid #2a2e35}
 .card2{background:#1a1d22;border-radius:24px;padding:36px 48px}
+.stamp{display:inline-block;padding:8px 36px;border:6px solid #f3c34f;border-radius:16px;color:#f3c34f;font-family:Anton,sans-serif;font-size:110px;line-height:130px;text-transform:uppercase;transform:rotate(-6deg)}
 .bar{height:56px;border-radius:0 10px 10px 0;background:#5e646c;transform-origin:left center}
 """
 
@@ -266,8 +267,87 @@ def scaling():
     e.append(A(17.3, None, 920, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage à ton binôme</p>'))
     return ''.join(e), 20.0, []
 
+# ---------------- Nouveaux formats (week-ends de novembre) ----------------
+def cindy():
+    e = []
+    e.append(A(0.0, 3.4, 300, '<span class="tag">WOD du week-end</span>'))
+    e.append(A(0.15, 3.4, 420, '<p class="hero" style="font-size:230px;line-height:240px">20:00</p>'))
+    e.append(A(0.5, 3.4, 700, '<h1 class="tc" style="font-size:240px;line-height:260px">Cindy</h1>'))
+    e.append(A(0.9, 3.4, 1000, '<p class="b muted">Un benchmark classique à faire ce week-end.</p>'))
+    e.append(A(3.6, 9.0, 300, '<h2 class="ts">Le WOD</h2>'))
+    rows = [('FORMAT', 'AMRAP 20 min'), ('1', '5 pull-ups'), ('2', '10 push-ups'), ('3', '15 air squats'), ('SCORE', 'Tours + reps')]
+    for k, (a, b) in enumerate(rows):
+        e.append(A(4.0 + k * 0.5, 9.0, 500 + k * 120, f'<div class="row"><span class="rk">{a}</span><span style="font-weight:600">{b}</span></div>'))
+    e.append(A(9.2, 13.6, 300, '<h2 class="ts">Version<br>scaled</h2>'))
+    e.append(A(9.6, 13.6, 600, '<div class="row"><span class="rk">PULL-UP</span><span style="font-weight:600"><span class="ch">→</span> Ring row</span></div>'))
+    e.append(A(10.1, 13.6, 720, '<div class="row"><span class="rk">PUSH-UP</span><span style="font-weight:600"><span class="ch">→</span> Mains surélevées</span></div>'))
+    e.append(A(10.6, 13.6, 880, '<p class="b">Même durée, même rythme : garde-toi en mouvement 20 minutes.</p>'))
+    e.append(A(13.8, None, 300, '<span class="tag ol">Top départ</span>'))
+    e.append(A(13.9, None, 420, '<p class="hero cnt" data-from="1200" data-to="1194" data-t0="14.2" data-t1="20.2" data-fmt="time" data-lin="1" style="font-size:280px;line-height:300px">20:00</p>'))
+    e.append(A(14.4, None, 800, '<p class="b">Poste ton score en commentaire : <span class="ch" style="font-weight:600">tours + reps</span>, RX ou scaled.</p>'))
+    e.append(A(15.0, None, 1060, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre pour ce week-end</p>'))
+    return ''.join(e), 19.5, []
+
+def quiz():
+    e = []
+    e.append(A(0.0, 3.0, 300, '<span class="tag">Quiz</span>'))
+    e.append(A(0.15, 3.0, 420, '<h1 class="tc">Devine<br>le WOD</h1>'))
+    e.append(A(0.6, 3.0, 860, '<p class="b muted">3 benchmarks célèbres. Réponds avant la fin du compte à rebours.</p>'))
+    wods = [('Grace', ['30 clean & jerks', '61 kg · 43 kg', 'Pour le temps']),
+            ('Helen', ['3 tours', '400 m de course', '21 kettlebell swings', '12 pull-ups']),
+            ('Murph', ['1,6 km de course', '100 pull-ups', '200 push-ups', '300 squats', '1,6 km de course'])]
+    for k, (name, lines) in enumerate(wods):
+        t0 = 3.2 + k * 5.2; t1 = t0 + 5.0
+        e.append(A(t0, t1, 300, f'<p class="mono muted" style="font-size:40px;font-weight:700;margin:0">WOD {k+1}/3</p>'))
+        body = ''.join(f'<div class="row" style="padding:22px 0"><span style="font-weight:600">{l}</span></div>' for l in lines)
+        e.append(A(t0 + 0.2, t1, 400, f'<div style="border-bottom:2px solid #2a2e35">{body}</div>'))
+        e.append(A(t0 + 1.4, t0 + 3.4, 1080, f'<p class="hero cnt" data-from="3" data-to="0.6" data-t0="{t0 + 1.4}" data-t1="{t0 + 3.4}" data-lin="1" style="font-size:150px;line-height:160px">3</p>'))
+        e.append(A(t0 + 3.5, t1, 1060, f'<h2 class="tc ch" style="font-size:180px;line-height:200px">{name}</h2>'))
+    e.append(A(18.8, None, 420, '<h2 class="tc">Ton score ?</h2>'))
+    e.append(A(19.2, None, 660, '<p class="b">Combien en as-tu trouvé sur 3 ? Dis-le en commentaire.</p>'))
+    e.append(A(19.7, None, 880, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Partage à ton binôme</p>'))
+    return ''.join(e), 22.0, []
+
+def sac():
+    e = []
+    e.append(A(0.0, 3.2, 300, '<span class="tag">Box</span>'))
+    e.append(A(0.15, 3.2, 420, '<p class="hero" style="font-size:240px;line-height:240px">7</p>'))
+    e.append(A(0.5, 3.2, 680, '<h1 class="tc">Dans ton<br>sac de box</h1>'))
+    items = ['Corde à sauter', 'Gourde', 'Serviette', 'Protège-mains', 'Bandes de poignets', 'Chaussures stables', 'De quoi noter tes scores']
+    e.append(A(3.4, 12.2, 300, '<h2 class="ts">Les essentiels</h2>'))
+    for k, it in enumerate(items):
+        last = k == len(items) - 1
+        e.append(A(3.8 + k * 0.7, 12.2, 460 + k * 122,
+                   f'<div style="display:flex;align-items:center;gap:28px;padding:24px 0;border-top:2px solid #2a2e35">'
+                   f'<span class="mono ch" style="font-size:44px;font-weight:700">✓</span><span class="b"{" style=\"font-weight:600;color:#f3c34f\"" if last else ""}>{it}</span></div>'))
+    e.append(A(12.4, 16.2, 300, '<p class="mono ch" style="font-size:44px;font-weight:700;margin:0">LE PLUS OUBLIÉ</p>'))
+    e.append(A(12.6, 16.2, 400, '<h2 class="ts">Noter<br>ses scores</h2>'))
+    e.append(A(13.2, 16.2, 700, '<p class="b">Sans trace de tes séances, impossible de voir ta progression.</p>'))
+    e.append(A(16.4, None, 420, '<h2 class="tc">Et dans<br>ton sac ?</h2>'))
+    e.append(A(16.8, None, 860, '<p class="b">Dis-nous ce qu\'on a oublié en commentaire.</p>'))
+    e.append(A(17.3, None, 1060, '<p class="mono ch" style="font-size:40px;line-height:56px;font-weight:700;margin:0">L\'app WOD Genius arrive :<br>timer + suivi des PR</p>'))
+    return ''.join(e), 20.5, []
+
+def mythes():
+    e = []
+    e.append(A(0.0, 3.2, 300, '<span class="tag">Mythe ou réalité</span>'))
+    e.append(A(0.15, 3.2, 420, '<h1 class="tc">3 idées<br>reçues<br>de box</h1>'))
+    myths = [('« Pas de courbatures = séance ratée »', 'Les courbatures ne disent pas si ta séance était bonne. Ta progression se lit dans tes scores.'),
+             ('« Scaled = moins efficace »', 'Un WOD bien scalé garde le stimulus prévu. Souvent plus utile qu\'un RX subi.'),
+             ('« Plus lourd = mieux »', 'Une charge que tu bouges proprement et vite sert mieux le WOD qu\'une charge qui te bloque.')]
+    for k, (claim, real) in enumerate(myths):
+        t0 = 3.4 + k * 5.4; t1 = t0 + 5.2
+        e.append(A(t0, t1, 300, f'<p class="mono muted" style="font-size:40px;font-weight:700;margin:0">IDÉE {k+1}/3</p>'))
+        e.append(A(t0 + 0.2, t1, 400, f'<p class="b" style="font-size:66px;line-height:84px;font-weight:600">{claim}</p>'))
+        e.append(A(t0 + 1.4, t1, 680, '<span class="stamp">Mythe</span>'))
+        e.append(A(t0 + 2.0, t1, 900, f'<p class="b">{real}</p>'))
+    e.append(A(19.8, None, 420, '<h2 class="tc">Et toi ?</h2>'))
+    e.append(A(20.2, None, 660, '<p class="b">Quelle idée reçue t\'a le plus marqué en box ?</p>'))
+    e.append(A(20.7, None, 880, '<p class="mono ch" style="font-size:42px;line-height:56px;font-weight:700;margin:0">Enregistre · Partage</p>'))
+    return ''.join(e), 23.0, []
+
 REELS = {'10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
-         '03-emom': emom, '04-pacing': pacing, '05-scaling': scaling, '09-tabata': tabata}
+         '13-cindy': cindy, '14-quiz-benchmarks': quiz, '15-sac-de-box': sac, '16-mythes': mythes}
 
 def page_html(body):
     return (f"<!doctype html><html lang='fr'><head><meta charset='utf-8'><style>{font_faces(FONTS)}\n{CSS}</style></head>"
