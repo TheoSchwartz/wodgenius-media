@@ -355,7 +355,7 @@ def ab_burpees():
     e.append(A(H0, 3.6, 390, '<h1 class="tc" style="font-size:190px;line-height:210px"><span class="ch">100<br>burpees</span></h1>'))
     e.append(A(H0, 3.6, 840, '<p class="b" style="font-size:78px;line-height:96px;font-weight:600">Lequel est<br>le plus dur ?</p>'))
     for k, (lt, name, rows, t0) in enumerate([
-            ('A', 'Pour le temps', ['100 burpees', 'Le plus vite possible', 'Pause quand tu veux'], 3.8),
+            ('A', 'For Time', ['100 burpees', 'Le plus vite possible', 'Pause quand tu veux'], 3.8),
             ('B', 'EMOM 10 min', ['10 burpees par minute', 'Repos : le reste de la minute', '10 minutes, pas une de plus'], 8.2)]):
         t1 = t0 + 4.2
         e.append(A(t0, t1, 260, f'<p class="hero" style="font-size:260px;line-height:260px">{lt}</p>'))
