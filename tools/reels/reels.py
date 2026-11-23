@@ -426,7 +426,30 @@ def apres_wod():
     e.append(A(16.2, None, 1110, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le-lui</p>'))
     return ''.join(e), 20.0, []
 
-REELS = {'10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
+def death_by():
+    e = []
+    e.append(A(H0, 3.6, 260, '<span class="tag">Death By</span>'))
+    e.append(A(H0, 3.6, 400, '<h1 class="tc" style="font-size:150px;line-height:178px">Tu tiens<br><span class="ch">combien de<br>minutes ?</span></h1>'))
+    e.append(A(H0, 3.6, 980, '<p class="b muted" style="font-size:56px;line-height:72px">Death By pull-ups. Une rep de plus chaque minute.</p>'))
+    e.append(A(3.8, 10.4, 260, '<h2 class="ts">Les règles</h2>'))
+    rules = [('1', 'Minute 1 : 1 pull-up'), ('2', 'Minute 2 : 2 pull-ups'), ('+1', 'Une rep de plus chaque minute'),
+             ('✕', 'Minute pas finie ? C\'est terminé.')]
+    for k, (l, txt) in enumerate(rules):
+        e.append(A(4.2 + k * 0.7, 10.4, 440 + k * 170, f'<div class="step2"><span class="mono ch" style="font-size:56px;font-weight:700;width:96px">{l}</span><span class="b">{txt}</span></div>'))
+    e.append(A(10.6, 15.6, 260, '<h2 class="ts">Ça monte vite</h2>'))
+    e.append(A(10.9, 15.6, 440, '<p class="b muted">Pull-ups faits au total</p>'))
+    for k, (m, tot) in enumerate([(5, 15), (10, 55), (15, 120)]):
+        acc = k == 2
+        e.append(A(11.3 + k * 0.7, 15.6, 580 + k * 180,
+                   f'<div class="row" style="padding:36px 0"><span class="rk" style="font-size:40px">MINUTE {m}</span>'
+                   f'<span class="mono" style="font-size:84px;line-height:90px;font-weight:700;color:{"#f3c34f" if acc else "#f2efe8"}">{tot}</span></div>'))
+    e.append(A(15.8, None, 300, '<h2 class="tc">Ton score ?</h2>'))
+    e.append(A(16.2, None, 560, '<p class="b">Ta dernière minute complète. Dis-la en commentaire.</p>'))
+    e.append(A(16.8, None, 800, '<p class="b muted" style="font-size:44px;line-height:58px">Scaled : ring rows, même règle.</p>'))
+    e.append(A(17.4, None, 1000, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à ton binôme :<br>qui tient le plus ?</p>'))
+    return ''.join(e), 21.0, []
+
+REELS = {'22-death-by': death_by, '10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
          '13-cindy': cindy, '14-quiz-benchmarks': quiz, '15-sac-de-box': sac, '16-mythes': mythes,
          '17-a-ou-b-burpees': ab_burpees, '18-defi-binome': defi_binome, '20-no-rep': no_rep, '21-apres-wod': apres_wod}
 
