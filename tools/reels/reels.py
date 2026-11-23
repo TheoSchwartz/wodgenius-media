@@ -449,7 +449,26 @@ def death_by():
     e.append(A(17.4, None, 1000, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à ton binôme :<br>qui tient le plus ?</p>'))
     return ''.join(e), 21.0, []
 
-REELS = {'22-death-by': death_by, '10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
+def double_unders():
+    e = []
+    e.append(A(H0, 3.6, 260, '<span class="tag">Technique</span>'))
+    e.append(A(H0, 3.6, 400, '<h1 class="tc" style="font-size:150px;line-height:178px">Toujours pas<br>de <span class="ch">double<br>unders</span> ?</h1>'))
+    e.append(A(H0, 3.6, 980, '<p class="b muted" style="font-size:56px;line-height:72px">3 étapes, dans l\'ordre.</p>'))
+    steps = [('Des simples<br>rapides', 'Saute sur place, bras près du corps : ce sont les poignets qui tournent, pas les épaules.', '30 s sans arrêt'),
+             ('Simple, simple,<br>double', 'Deux sauts simples pour le rythme, un double. Puis on recommence, sans s\'arrêter.', '5 cycles sans arrêt'),
+             ('Les doubles<br>enchaînés', 'Saut un peu plus haut, même rythme, regard droit devant. Commence par 2, puis 3.', 'Séries courtes')]
+    for k, (title, txt, goal) in enumerate(steps):
+        t0 = 3.8 + k * 4.2; t1 = t0 + 4.0
+        e.append(A(t0, t1, 260, f'<p class="mono ch" style="font-size:48px;font-weight:700;margin:0">ÉTAPE 0{k+1}</p>'))
+        e.append(A(t0 + 0.2, t1, 360, f'<h2 class="ts">{title}</h2>'))
+        e.append(A(t0 + 0.7, t1, 680, f'<p class="b">{txt}</p>'))
+        e.append(A(t0 + 1.3, t1, 1000, f'<span class="pill"><span class="mono ch" style="font-weight:700;margin-right:18px">OBJECTIF</span>{goal}</span>'))
+    e.append(A(16.6, None, 300, '<h2 class="tc">Tu en es<br>où ?</h2>'))
+    e.append(A(17.0, None, 740, '<p class="b">Étape 1, 2 ou 3 ? Dis-le en commentaire.</p>'))
+    e.append(A(17.6, None, 960, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à celui qui se<br>fouette les mollets</p>'))
+    return ''.join(e), 21.0, []
+
+REELS = {'23-double-unders': double_unders, '22-death-by': death_by, '10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
          '13-cindy': cindy, '14-quiz-benchmarks': quiz, '15-sac-de-box': sac, '16-mythes': mythes,
          '17-a-ou-b-burpees': ab_burpees, '18-defi-binome': defi_binome, '20-no-rep': no_rep, '21-apres-wod': apres_wod}
 
