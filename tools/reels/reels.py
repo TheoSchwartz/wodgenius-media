@@ -468,7 +468,46 @@ def double_unders():
     e.append(A(17.6, None, 960, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à celui qui se<br>fouette les mollets</p>'))
     return ''.join(e), 21.0, []
 
-REELS = {'23-double-unders': double_unders, '22-death-by': death_by, '10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
+def profils_box():
+    e = []
+    e.append(A(H0, 3.6, 260, '<span class="tag">Vie de box</span>'))
+    e.append(A(H0, 3.6, 400, '<h1 class="tc" style="font-size:150px;line-height:178px"><span class="ch">5 profils</span><br>dans toutes<br>les box</h1>'))
+    e.append(A(H0, 3.6, 980, '<p class="b muted" style="font-size:56px;line-height:72px">Tu es lequel ?</p>'))
+    profils = ['Demande «&nbsp;on en est à combien de tours&nbsp;?&nbsp;» en plein WOD',
+               'Pose la barre à 2 secondes de la fin',
+               'Annonce «&nbsp;je suis cuit&nbsp;» dès l\'échauffement',
+               'Range le matériel de tout le monde',
+               'Connaît le score de chacun, sauf le sien']
+    for k, txt in enumerate(profils):
+        t0 = 3.8 + k * 2.9; t1 = t0 + 2.8
+        e.append(A(t0, t1, 260, f'<p class="hero" style="font-size:200px;line-height:210px">{k+1}</p>'))
+        e.append(A(t0, t1, 500, '<p class="mono muted" style="font-size:44px;font-weight:700;margin:0">CELUI QUI…</p>'))
+        e.append(A(t0 + 0.3, t1, 600, f'<p class="b" style="font-size:78px;line-height:98px;font-weight:600">{txt}</p>'))
+    e.append(A(18.4, None, 300, '<h2 class="tc">Coupable ?</h2>'))
+    e.append(A(18.8, None, 560, '<p class="b">Tu es le combien ? Réponds en commentaire.</p>'))
+    e.append(A(19.4, None, 800, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à celui<br>qui se reconnaît</p>'))
+    return ''.join(e), 22.0, []
+
+def squat_3():
+    e = []
+    e.append(A(H0, 3.6, 260, '<span class="tag">1 mouvement, 3 versions</span>'))
+    e.append(A(H0, 3.6, 400, '<h1 class="tc" style="font-size:150px;line-height:178px"><span class="ch">3 squats</span><br>Lequel est<br>le plus dur ?</h1>'))
+    e.append(A(H0, 3.6, 980, '<p class="b muted" style="font-size:56px;line-height:72px">Garde ta réponse en tête.</p>'))
+    vs = [('Air squat', 'POIDS DU CORPS', 'Hanches sous les genoux, talons au sol. Simple… jusqu\'à la 50e rep.'),
+          ('Front squat', 'BARRE DEVANT', 'Barre posée sur les épaules, coudes hauts : le buste doit rester droit.'),
+          ('Overhead squat', 'BARRE AU-DESSUS', 'Bras tendus, barre au-dessus de la tête : épaules, gainage et mobilité en même temps.')]
+    for k, (name, sub, txt) in enumerate(vs):
+        t0 = 3.8 + k * 4.4; t1 = t0 + 4.2
+        e.append(A(t0, t1, 260, f'<p class="hero" style="font-size:200px;line-height:210px">{k+1}</p>'))
+        e.append(A(t0 + 0.2, t1, 500, f'<h2 class="ts">{name}</h2>'))
+        e.append(A(t0 + 0.5, t1, 650, f'<p class="mono muted" style="font-size:40px;font-weight:700;margin:0">{sub}</p>'))
+        e.append(A(t0 + 1.0, t1, 760, f'<p class="b">{txt}</p>'))
+    e.append(A(17.2, None, 300, '<h2 class="tc">Alors ?</h2>'))
+    e.append(A(17.6, None, 560, '<p class="b">Ton plus dur : 1, 2 ou 3 ? Vote en commentaire.</p>'))
+    e.append(A(18.2, None, 800, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à ton binôme :<br>il dira l\'inverse.</p>'))
+    return ''.join(e), 21.0, []
+
+REELS = {'25-squat-3-versions': squat_3, '24-profils-box': profils_box, '23-double-unders': double_unders, '22-death-by': death_by, '10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
          '13-cindy': cindy, '14-quiz-benchmarks': quiz, '15-sac-de-box': sac, '16-mythes': mythes,
          '17-a-ou-b-burpees': ab_burpees, '18-defi-binome': defi_binome, '20-no-rep': no_rep, '21-apres-wod': apres_wod}
 
