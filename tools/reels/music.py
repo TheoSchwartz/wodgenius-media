@@ -120,12 +120,13 @@ def lofi(path, dur, accent=9.8, full_at=3.4):
     return bpm
 
 # ---------------------------------------------------------------- minimal house (Hollow)
-def house(path, dur, start=3.4, cta=14.3):
-    bpm = 120; beat = 0.5; bar = 2.0
+def house(path, dur, start=3.4, cta=14.3, bpm=120, tr=0):
+    """House 120 BPM, mi mineur. bpm et tr (transposition en demi-tons) pour une variante."""
+    beat = 60 / bpm; bar = 4 * beat
     pre = 2 * bar - start          # mesure 3 calée sur l'apparition des étapes
     m = Mix(dur, pre)
-    stab = [note(n) for n in (-17, -10, -5, -2, 2)]     # mi, si, mi, sol, si : accord Em(add9) ouvert
-    bassline = [note(-41), None, note(-41), note(-29), None, note(-41), note(-38), None]   # mi1 / mi2 / sol1
+    stab = [note(n + tr) for n in (-17, -10, -5, -2, 2)]     # mi, si, mi, sol, si : accord Em(add9) ouvert
+    bassline = [note(-41 + tr), None, note(-41 + tr), note(-29 + tr), None, note(-41 + tr), note(-38 + tr), None]   # mi1 / mi2 / sol1
     nbars = int((dur + pre) / bar) + 1
     breakdown = start + bar * np.ceil((cta - start) / bar)   # première mesure après le message final
     for b in range(nbars):
@@ -190,11 +191,11 @@ def sub808(f, d):
     x = np.sin(2 * np.pi * np.cumsum(fr) / SR)
     return np.tanh(1.8 * x) * np.exp(-t / (d / 2.5)) * np.minimum(1, t / 0.003)
 
-def synthwave(path, dur, cue=3.4):
-    """Synthwave 108 BPM, la mineur : nappes, arpège en croches, caisse claire ample."""
-    beat, bar, pre, m, nb = _grid(dur, 108, cue)
-    chords = [[-12, -9, -5, 0], [-16, -12, -9, -4], [-9, -5, -2, 3], [-14, -10, -7, -2]]   # Am F C G
-    roots = [note(-36), note(-40), note(-33), note(-38)]
+def synthwave(path, dur, cue=3.4, bpm=108, tr=0):
+    """Synthwave 108 BPM, la mineur : nappes, arpège en croches, caisse claire ample. bpm et tr pour une variante."""
+    beat, bar, pre, m, nb = _grid(dur, bpm, cue)
+    chords = [[n + tr for n in c] for c in [[-12, -9, -5, 0], [-16, -12, -9, -4], [-9, -5, -2, 3], [-14, -10, -7, -2]]]   # Am F C G
+    roots = [note(-36 + tr), note(-40 + tr), note(-33 + tr), note(-38 + tr)]
     for b in range(nb):
         t0 = b * bar - pre; c = b % 4; full = t0 >= cue - 0.01
         m.add(pad([note(n) for n in chords[c]], bar, 1400 if full else 900), t0, 0.5)
@@ -215,7 +216,7 @@ def synthwave(path, dur, cue=3.4):
                     m.add(snare(), tk, 0.3)
                 for h in range(2): m.add(hat(0.01, 0.04, 8000), tk + h * beat / 2, 0.06, 0.2)
     delay(m, beat * 0.75, 0.4, 0.28)
-    m.render(path, 1.0); return 108
+    m.render(path, 1.0); return bpm
 
 def funk(path, dur, cue=3.4):
     """Funk 112 BPM, mi mineur : basse syncopée, accords courts à contretemps, caisse claire avec notes fantômes."""
@@ -365,7 +366,15 @@ def garage(path, dur, cue=3.4):
     delay(m, beat * 0.75, 0.3, 0.18)
     m.render(path, 1.0); return 126
 
-STYLES = {'lofi': lofi, 'house': house, 'synthwave': synthwave, 'funk': funk, 'trap': trap, 'boombap': boombap, 'phonk': phonk, 'phonk118': phonk118, 'garage': garage}
+def house122(path, dur, cue=3.8, cta=15.8):
+    """Variante house : 122 BPM, fa dièse mineur (Reel 30)."""
+    return house(path, dur, cue, cta, bpm=122, tr=2)
+
+def synthwave104(path, dur, cue=3.8):
+    """Variante synthwave : 104 BPM, do mineur (Reel 31)."""
+    return synthwave(path, dur, cue, bpm=104, tr=3)
+
+STYLES = {'house122': house122, 'synthwave104': synthwave104, 'lofi': lofi, 'house': house, 'synthwave': synthwave, 'funk': funk, 'trap': trap, 'boombap': boombap, 'phonk': phonk, 'phonk118': phonk118, 'garage': garage}
 if __name__ == '__main__':
     style, out = sys.argv[1], sys.argv[2]
     dur = float(sys.argv[3]) if len(sys.argv) > 3 else 13.5

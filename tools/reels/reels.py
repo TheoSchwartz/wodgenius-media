@@ -507,7 +507,100 @@ def squat_3():
     e.append(A(18.2, None, 800, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à ton binôme :<br>il dira l\'inverse.</p>'))
     return ''.join(e), 21.0, []
 
-REELS = {'25-squat-3-versions': squat_3, '24-profils-box': profils_box, '23-double-unders': double_unders, '22-death-by': death_by, '10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
+# ---------------- Lot du 9 au 15 décembre ----------------
+def coach_traduit():
+    e = []
+    e.append(A(H0, 3.6, 260, '<span class="tag">Vie de box</span>'))
+    e.append(A(H0, 3.6, 400, '<h1 class="tc" style="font-size:150px;line-height:178px"><span class="ch">4 phrases</span><br>de coach,<br>traduites</h1>'))
+    e.append(A(H0, 3.6, 980, '<p class="b muted" style="font-size:56px;line-height:72px">Tu les as toutes entendues.</p>'))
+    lines = [('« Encore 3 reps ! »', 'Il en reste dix.'),
+             ('« C\'est un WOD court. »', 'Tu vas le sentir longtemps.'),
+             ('« Prends une charge confortable. »', 'Je vais te dire d\'en rajouter.'),
+             ('« Garde un rythme régulier. »', 'Arrête de sprinter au premier tour.')]
+    for k, (said, real) in enumerate(lines):
+        t0 = 3.8 + k * 3.7; t1 = t0 + 3.6
+        e.append(A(t0, t1, 260, f'<p class="hero" style="font-size:200px;line-height:210px">{k+1}</p>'))
+        e.append(A(t0, t1, 500, '<p class="mono muted" style="font-size:40px;font-weight:700;margin:0">IL DIT</p>'))
+        e.append(A(t0 + 0.2, t1, 580, f'<p class="b" style="font-size:72px;line-height:90px;font-weight:600">{said}</p>'))
+        e.append(A(t0 + 1.0, t1, 880, '<p class="mono muted" style="font-size:40px;font-weight:700;margin:0">TRADUCTION</p>'))
+        e.append(A(t0 + 1.0, t1, 960, f'<h2 class="ts" style="font-size:96px;line-height:116px">{real}</h2>'))
+    e.append(A(18.8, None, 300, '<h2 class="tc">Il en<br>manque ?</h2>'))
+    e.append(A(19.2, None, 740, '<p class="b">Ta phrase de coach préférée, en commentaire.</p>'))
+    e.append(A(19.8, None, 960, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à ton coach</p>'))
+    return ''.join(e), 22.4, []
+
+def trop_vite():
+    e = []
+    e.append(A(H0, 3.6, 260, '<span class="tag">Pacing</span>'))
+    e.append(A(H0, 3.6, 400, '<h1 class="tc" style="font-size:150px;line-height:178px"><span class="ch">4 signes</span><br>que tu pars<br>trop vite</h1>'))
+    e.append(A(H0, 3.6, 980, '<p class="b muted" style="font-size:56px;line-height:72px">Compte combien te concernent.</p>'))
+    items = ['Ton 1er tour est bien plus rapide que les suivants',
+             'Tu poses la barre avant la moitié du WOD',
+             'Au 2e tour, tu ne peux plus dire une phrase',
+             'Ton dernier tour est le plus lent']
+    e.append(A(3.8, 14.6, 260, '<h2 class="ts">Tu pars trop<br>vite si…</h2>'))
+    for k, it in enumerate(items):
+        e.append(A(4.2 + k * 2.6, 14.6, 560 + k * 190,
+                   f'<div style="display:flex;align-items:flex-start;gap:28px;padding:26px 0;border-top:2px solid #2a2e35">'
+                   f'<span class="mono ch" style="font-size:48px;line-height:66px;font-weight:700">✓</span><span class="b">{it}</span></div>'))
+    e.append(A(14.8, 18.0, 260, '<p class="mono ch" style="font-size:44px;font-weight:700;margin:0">LE REPÈRE</p>'))
+    e.append(A(15.0, 18.0, 360, '<h2 class="ts">Un 1er tour<br>que tu peux<br>répéter</h2>'))
+    e.append(A(15.5, 18.0, 800, '<p class="b">Jusqu\'au bout du WOD, au même rythme.</p>'))
+    e.append(A(18.2, None, 300, '<h2 class="tc">Ton score<br>sur 4 ?</h2>'))
+    e.append(A(18.6, None, 740, '<p class="b">Dis-le en commentaire.</p>'))
+    e.append(A(19.1, None, 900, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à celui<br>qui part à fond</p>'))
+    return ''.join(e), 21.8, []
+
+def tabata_squats():
+    e = []
+    e.append(A(H0, 3.6, 260, '<span class="tag">WOD à faire · Tabata</span>'))
+    e.append(A(H0, 3.6, 400, '<h1 class="tc" style="font-size:150px;line-height:178px"><span class="ch">8 rounds</span><br>Seul le pire<br>compte</h1>'))
+    e.append(A(H0, 3.6, 980, '<p class="b muted" style="font-size:56px;line-height:72px">Tabata air squats. 4 minutes.</p>'))
+    e.append(A(3.8, 9.4, 260, '<h2 class="ts">La règle</h2>'))
+    rules = [('20 s', 'Air squats, max de reps'), ('10 s', 'Repos'), ('× 8', 'Rounds, sans pause'), ('=', 'Ton score : ton round le plus faible')]
+    for k, (l, txt) in enumerate(rules):
+        e.append(A(4.2 + k * 0.7, 9.4, 440 + k * 170, f'<div class="step2"><span class="mono ch" style="font-size:52px;font-weight:700;width:150px;flex:none">{l}</span><span class="b">{txt}</span></div>'))
+    reps = [22, 21, 21, 20, 19, 19, 18, 17]
+    e.append(A(9.6, 15.6, 260, '<h2 class="ts">Le score</h2>'))
+    e.append(A(9.6, 15.6, 400, '<p class="mono muted" style="font-size:34px;font-weight:700;margin:0">EXEMPLE ILLUSTRATIF · REPS PAR ROUND</p>'))
+    cols = []
+    for k, r in enumerate(reps):
+        low = r == min(reps) and k == len(reps) - 1
+        cols.append(f'<div class="col" style="flex:1"><span class="v{" vA" if low else ""}" style="font-size:34px">{r}</span>'
+                    f'<div class="vbar growy" data-t0="{10.0 + k * 0.2:.2f}" style="width:64px;height:{r * 22}px;background:{"#f3c34f" if low else "#5e646c"}"></div>'
+                    f'<span class="xl" style="font-size:26px">R{k+1}</span></div>')
+    e.append(A(9.8, 15.6, 500, f'<div style="display:flex;align-items:flex-end;height:560px;border-bottom:2px solid #2a2e35">{"".join(cols)}</div>'))
+    e.append(A(12.0, 15.6, 1120, '<p class="b" style="font-weight:600">Score : <span class="mono ch" style="font-weight:700">17</span></p>'))
+    e.append(A(15.8, None, 300, '<h2 class="tc">Ton score ?</h2>'))
+    e.append(A(16.2, None, 560, '<p class="b">Ton pire round, en commentaire.</p>'))
+    e.append(A(16.7, None, 760, '<p class="b muted" style="font-size:44px;line-height:58px">Scaled : squats jusqu\'à une box.</p>'))
+    e.append(A(17.3, None, 960, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Défie ton binôme :<br>qui a le meilleur pire round ?</p>'))
+    return ''.join(e), 20.6, []
+
+def mythes_2():
+    e = []
+    e.append(A(H0, 3.6, 260, '<span class="tag">Mythe ou réalité</span>'))
+    e.append(A(H0, 3.6, 400, '<h1 class="tc" style="font-size:150px;line-height:178px"><span class="ch">3 phrases</span><br>de box : vrai<br>ou faux ?</h1>'))
+    e.append(A(H0, 3.6, 980, '<p class="b muted" style="font-size:56px;line-height:72px">Réponds avant le tampon.</p>'))
+    items = [('« Plus tu transpires, plus ta séance était efficace »', 'Mythe',
+              'La sueur dépend surtout de la chaleur, de l\'humidité et de chacun. Pas de la qualité du WOD.'),
+             ('« Il faut être en forme avant de commencer »', 'Mythe',
+              'Chaque WOD se scale : charge, volume, mouvement. On commence à son niveau.'),
+             ('« Une mauvaise nuit se sent dans le WOD »', 'Réalité',
+              'Le sommeil fait partie de la récupération. Mal dormi ? Adapte l\'intensité du jour.')]
+    for k, (claim, verdict, real) in enumerate(items):
+        t0 = 3.8 + k * 5.4; t1 = t0 + 5.2
+        e.append(A(t0, t1, 260, f'<p class="mono muted" style="font-size:40px;font-weight:700;margin:0">PHRASE {k+1}/3</p>'))
+        e.append(A(t0 + 0.2, t1, 360, f'<p class="b" style="font-size:66px;line-height:84px;font-weight:600">{claim}</p>'))
+        e.append(A(t0 + 1.4, t1, 680, f'<span class="stamp">{verdict}</span>'))
+        e.append(A(t0 + 2.0, t1, 900, f'<p class="b">{real}</p>'))
+    e.append(A(20.2, None, 300, '<h2 class="tc">3/3 ?</h2>'))
+    e.append(A(20.6, None, 560, '<p class="b">Ton score en commentaire.</p>'))
+    e.append(A(21.1, None, 760, '<p class="mono ch" style="font-size:44px;line-height:60px;font-weight:700;margin:0">Envoie-le à celui qui<br>juge sa séance à la sueur</p>'))
+    return ''.join(e), 23.0, []
+
+REELS = {'27-coach-traduit': coach_traduit, '28-trop-vite': trop_vite, '30-tabata-squats': tabata_squats, '31-mythes-2': mythes_2,
+         '25-squat-3-versions': squat_3, '24-profils-box': profils_box, '23-double-unders': double_unders, '22-death-by': death_by, '10-fran': fran, '11-rpe': rpe, '12-hollow': hollow,
          '13-cindy': cindy, '14-quiz-benchmarks': quiz, '15-sac-de-box': sac, '16-mythes': mythes,
          '17-a-ou-b-burpees': ab_burpees, '18-defi-binome': defi_binome, '20-no-rep': no_rep, '21-apres-wod': apres_wod}
 
